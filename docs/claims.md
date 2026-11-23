@@ -16,7 +16,7 @@ walks this table. If a claim has no enforcement, remove the claim or mark it "pl
 | Never works around the permission system (README) | cleanup.md H7; permissions.md "never" list | Read permissions.md; test with a denied command |
 | Never just says "I can't" (README) | permissions.md blocker table | Every blocker row offers options and asks for the permission needed |
 | Recycle Bin or Trash first where it really works (README) | cleanup.md H10; steps/06 section 5 | Read steps/06; the log must say what actually happened |
-| Reads names, sizes, dates and extensions only (PRIVACY) | cleanup.md H8; steps/02; _attribution.md | Search for any instruction to open file contents |
+| File classification uses filesystem metadata. An explicitly requested Codex diagnosis may also compare project and chat metadata locally and return aggregate results. | [Privacy rules](../PRIVACY.md), [storage probe](../plugin/catalog/codex-storage.md), [sidebar probe](../plugin/catalog/codex-sidebar.md) | Run `python -B dev/codex_diagnosis_tests.py -v` for the 25-chat assignment regression, aggregate output, pagination and incomplete coverage. |
 | Items are "classified", never promised "safe" or "faster" (README) | cleanup.md H11 | Search the repo for banned words (below) |
 | Rows are marked `active` only after confirmation (catalog) | catalog/README.md Status; SOURCES.md | Each `active` row has a Verified line |
 | Instruction changes have designated reviewers | [.github/CODEOWNERS](../.github/CODEOWNERS) names the fork owner | Check current fork settings for any required review rules |

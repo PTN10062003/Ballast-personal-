@@ -77,7 +77,7 @@ begins with the installation verification and the two consent questions, and the
   everything sorted into tiers.
 - **"Show how much space Codex uses and check why my removed project still appears in the sidebar."**
   Ballast reports logical storage sizes and summarizes which chats it could match to current projects.
-  You can request either check on its own. Both are read-only. [Codex diagnosis](plugin/catalog/codex-storage.md)
+  You can request either check on its own. The report appears in chat, including when you use the HTML dashboard. [Reading the Codex reports](providers/codex.md#reading-the-codex-reports)
 - **"My laptop is struggling. What is holding memory and GPU memory right now?"** Looks at leftover processes
   (MCP servers, headless browsers, model runners) and the graphics memory they hold.
 - **"Run the weekly Ballast check and show me what has grown since last time."** Follows
@@ -108,6 +108,17 @@ example data. The checkout includes the page. An installed plugin shows the repo
 - Also: a GPU memory line (only when your scan measured it), a breakdown table, light and dark themes, and "Scan again".
 
 See [dashboard.md](plugin/dashboard.md).
+
+**Reading a space estimate.** If you select 1 GiB for a move to the same volume’s Recycle Bin, the
+dashboard shows 1 GiB selected, 1 GiB pending in the bin and 0 GiB of immediate gain. A permanent
+removal with uncertain recoverable space shows **unknown**. After cleanup, Results shows the measured
+change in free space on that volume.
+
+**Reviewing a group.** For a large group, the dashboard previews the largest 50 paths. Open the
+linked manifest to see every path in the group. When you copy your selection back to chat, it
+includes the scan, group, volume, removal method, count and SHA-256 digest. Ballast checks that
+the list still matches and asks for approval before acting. If an approved entry becomes busy,
+Ballast skips it and records the reason.
 
 ## What is in this repo
 

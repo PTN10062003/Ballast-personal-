@@ -6,7 +6,10 @@ All notable changes to Ballast are listed here, newest first. The format follows
 
 ## [Unreleased]
 
-The personal fork strengthens process privacy, path and lock checks, browser storage protection, report generation, manifest approvals and per-volume accounting. Install verification compares the complete checkout or packaged plugin to a trusted reference. Pull requests exercise the release archives and regression fixtures.
+- Added opt-in Codex storage and sidebar reports. Storage shows logical sizes per volume. Sidebar diagnosis preserves valid project assignments even when a legacy key or folder is missing and labels Desktop-only coverage. [Usage guide](providers/codex.md#reading-the-codex-reports)
+- Process probes keep raw arguments local. Cleanup rechecks path identity and locks immediately before acting, and protects browser service-worker storage.
+- The offline dashboard embeds report data with tested JSON escaping. Group selections bind to the complete manifest. Both report formats apply the same eligibility rules and distinguish selected size, estimated immediate gain, bytes pending in the bin and observed free-space change.
+- Installation verification compares the complete checkout or installed plugin with a trusted fork reference. Pull-request checks exercise synthetic cleanup and diagnosis fixtures, offline browser reports and packaged archives. [Verification record](dev/tests.md)
 
 ## [0.1.4] - 2026-11-10
 
