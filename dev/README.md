@@ -1,8 +1,8 @@
 # dev: tests for maintainers
 
-This folder is for people who change Ballast. It is not part of what users run. It holds Markdown only:
-nothing here is a script, and the test folders are **built by the tester's own agent in a temporary location**, so no
-dummy files are stored in the repo.
+This folder contains the fork’s verification and report tools and development tests. None of these files
+is bundled in the instructions-only plugin. Regression tests use temporary file trees. See the
+[fork test record](tests.md#fork-verification) for commands and host coverage.
 
 | File | What it is |
 |---|---|

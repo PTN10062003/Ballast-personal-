@@ -10,7 +10,7 @@ Its files are text and one static HTML page that makes no network requests, so n
 | When | Where it goes | What is sent |
 |---|---|---|
 | You clone or browse this repo | GitHub | What any visit sends, such as your IP address. This is between you and GitHub |
-| You use an AI agent to run Ballast | Your AI provider, under *your* account and *its* terms | **Everything the agent reads or prints in the conversation**: folder and file names, paths, sizes, dates, process names, and anything you type. Ballast tells the agent to read names, sizes, dates and extensions only, never file contents, and not to print whole command lines. But the agent is the model, so anything it shows you has already reached your provider |
+| You use an AI agent to run Ballast | Your AI provider, under *your* account and *its* terms | Your messages and the agent's tool output, including file and folder names, paths, sizes, dates, process names, IDs, parent IDs, start times and local match results. This applies even to tool output that the final reply omits. The consent prompt explains this before scanning. |
 | Your agent runs a command you approved | Wherever that command goes | Ballast's examples are local and read-only. Anything else is your agent's own action, shown to you first |
 
 Ballast cannot control what your AI provider does with what your agent sends. Check their privacy terms.
@@ -18,8 +18,11 @@ Ballast cannot control what your AI provider does with what your agent sends. Ch
 ## What the agent is told to do about your data
 
 - Read metadata only: paths, sizes, dates, extensions. Never open a file's contents to classify it.
-- Match process command lines locally and report only yes or no. Never print a whole command line, and mask anything
-  shaped like a key, token or password.
+- For an explicitly requested Codex diagnosis, summarize storage sizes or project and chat ownership
+  locally. Only aggregate counts, sizes and coverage information may reach the agent in the diagnostic
+  output. Keep IDs, names, paths, titles, previews and conversation text out of that output.
+- Test process arguments inside a local probe. Return only process identifiers, start time and a yes/no/unknown
+  match. Keep raw arguments out of tool output, including error and debug streams, transcripts, logs and reports.
 - Never send credentials, tokens, `.env` files or browser data to any service.
 - Keep reports, baselines and the dashboard file on your computer, in a place you choose. Ballast does not upload them.
 - Offer to remove your username and personal path segments from **reports or copies you will share**. (This cannot

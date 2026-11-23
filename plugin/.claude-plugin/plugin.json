@@ -2,18 +2,17 @@
   "name": "ballast",
   "displayName": "Ballast",
   "description": "Instructions your AI agent follows to find and clear disk and memory leftovers from AI tools. Read-only scan first; asks before every deletion.",
-  "version": "0.1.4",
+  "version": "0.1.5-personal.1",
   "author": {
-    "name": "chittychat-studio",
-    "email": "hello@cardzo.co.in",
-    "url": "https://github.com/chittychat-studio"
+    "name": "PTN10062003",
+    "url": "https://github.com/PTN10062003"
   },
-  "homepage": "https://github.com/chittychat-studio/Ballast",
-  "repository": "https://github.com/chittychat-studio/Ballast",
+  "homepage": "https://github.com/PTN10062003/Ballast-personal-",
+  "repository": "https://github.com/PTN10062003/Ballast-personal-",
   "license": "Apache-2.0",
   "keywords": ["cleanup", "disk-space", "ai-tools", "local-models", "gpu", "vram"],
   "icon": "ballast-icon.png",
-  "documentationUrl": "https://github.com/chittychat-studio/Ballast#readme",
-  "supportUrl": "https://github.com/chittychat-studio/Ballast/issues",
-  "privacyPolicyUrl": "https://github.com/chittychat-studio/Ballast/blob/main/PRIVACY.md"
+  "documentationUrl": "https://github.com/PTN10062003/Ballast-personal-#readme",
+  "supportUrl": "https://github.com/PTN10062003/Ballast-personal-/issues",
+  "privacyPolicyUrl": "https://github.com/PTN10062003/Ballast-personal-/blob/main/PRIVACY.md"
 }

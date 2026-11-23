@@ -25,11 +25,14 @@ be empty, check it before use and refuse to continue if it is.
 Read-only. Windows examples (macOS and Linux: `df -h`, `uname -a`, `id`):
 
 ```powershell
-Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{n='UsedGB';e={[math]::Round($_.Used/1GB,1)}}, @{n='FreeGB';e={[math]::Round($_.Free/1GB,1)}}
+$drive = [IO.DriveInfo]::new([IO.Path]::GetPathRoot($env:USERPROFILE))
+$drive | Select-Object Name, DriveType, TotalSize, AvailableFreeSpace
 [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 ```
 
-Record: OS, free space, and whether you are running with administrator rights. If you are **not** elevated, expect
+Record OS, selected volume root and stable volume ID, total and available bytes, and administrator status.
+On POSIX, identify the mounted filesystem containing the actual user home and use its available space
+(`statvfs` available blocks times fragment size). If you are **not** elevated, expect
 some process details to be hidden. That makes those checks "unknown" (H2), not "clear".
 
 ## 5. The target
@@ -37,10 +40,10 @@ some process details to be hidden. That makes those checks "unknown" (H2), not "
 **On the first scan, ask the user for their target before you build the dashboard.** Ask it plainly, show the free
 space you measured in step 4, and wait for the answer:
 
-> "You have 78.4 GB free of 219 GB. How much free space would you like to reach? (A number in GB, or say \"no target\".)"
+> "On this volume you have 78.4 GiB free of 219 GiB. How much free space would you like to reach, in GiB? You can also say 'no target'."
 
-Do not assume a number. Put the answer in the dashboard's `targetGB` field ([dashboard.md](../dashboard.md)); the page
-shows it in the header bar. If the user says "no target", leave `targetGB` out: the page then shows free space against
+Do not assume a number. Put the answer in the dashboard's `targetGiB` field ([dashboard.md](../dashboard.md)); the page
+shows it in the header bar. If the user says "no target", leave `targetGiB` out: the page then shows free space against
 the drive's total and lets them type a target themselves. A target is the user's own goal, not a promise about what
 Ballast can reach. For a later scan in the same session, reuse the target they gave and say so.
 
@@ -71,6 +74,10 @@ Anything running now means its files are **in use**, and related items are Grey.
 ## 8. Pick the catalog
 
 Choose the `catalog/*.md` files that apply: only the tools actually present on this machine.
+For a general or weekly scan, use the ordinary Grey Codex rows. Include the optional
+[Codex diagnosis](../catalog/codex-storage.md) only if the user requests that scope. A request for
+storage totals covers the storage inventory alone. A request about sidebar entries covers the sidebar
+diagnosis alone. Keep each part's results separate from cleanup choices.
 
 ## 9. Time and memory limits
 

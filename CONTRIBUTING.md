@@ -4,11 +4,9 @@ Thanks for helping. Ballast only works if its rules are accurate and cautious.
 
 ## Ground rules
 
-- **Instructions in Markdown, plus one dashboard template, a logo, the plugin's icon (a PNG picture) and the four
-  manifests in `.claude-plugin/`, `plugin/.claude-plugin/`, `.agents/plugins/` and `plugin/plugin.json` (plain JSON
-  metadata; the two plugin manifests must carry the same version), plus repository settings files (`.github/` issue forms, pull request
-  template, Dependabot and workflow files, `.gitignore`, `.editorconfig`).** No scripts, binaries, installers or build steps in the user-facing repo. Example commands inside `.md` files must be short and clearly labelled, and
-  destructive ones must sit behind the approval steps.
+- Keep the installed plugin text-only, with JSON metadata and its PNG icon. Keep the offline dashboard in
+  `dashboard/` and verification, report-generation tools and automated tests in `dev/`. Example commands
+  in Markdown should explain their purpose. Destructive actions require the approval steps.
 - **The dashboard page is code.** Changes to `dashboard/ballast-dashboard.html` need a maintainer review. It must stay
   dependency-free, make no network requests, keep its Content-Security-Policy, build everything with text nodes (never
   `innerHTML`), and validate and sanitise every field. Re-run the dashboard tests D1 to D9 in

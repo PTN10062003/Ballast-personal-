@@ -7,12 +7,9 @@ leftovers that AI tools leave behind: Claude Code and Claude desktop (chat and C
 models (their files on disk, and the **GPU memory (VRAM)** they keep loaded), MCP servers, headless browsers, and the
 scratch projects agents create.
 
-There is **no program to install or run**. The instructions are Markdown. The repo also holds one static dashboard
-page (HTML that runs only in your browser, makes no network requests, and cannot delete anything), a logo, the plugin's icon (a PNG picture), and the
-four small JSON files that let Claude Code and Codex install it as a plugin. Beyond that there are only repository settings
-files (issue forms, a pull request template, the release workflow, Dependabot and editor settings), none of which
-you run. Your own agent reads the instructions, runs
-read-only checks through its own tools, and **asks you before every deletion**.
+The plugin contains Markdown instructions, JSON metadata and an icon. Your own agent runs read-only checks
+and asks before every deletion. A checkout also includes the offline browser dashboard and the tools used
+to verify an installation, generate reports and test releases.
 
 ## What it does
 
@@ -40,7 +37,7 @@ read-only checks through its own tools, and **asks you before every deletion**.
 
 - Deletes personal files, anything named backup, credentials, browser profile data, git history, or AI memory files.
   These are the Red tier and cannot be selected. See [catalog/_protected.md](plugin/catalog/_protected.md).
-- Ships or runs installers, binaries or scripts.
+- Installs a background service or runs scheduled cleanup.
 - Sends file contents anywhere, or collects any data. See [PRIVACY.md](PRIVACY.md).
 - Works around your agent's permission system, your operating system's protections, or your security software.
 - Promises that your computer will be faster or that a deletion is "safe". Items are *classified*, and you decide.
@@ -49,54 +46,38 @@ read-only checks through its own tools, and **asks you before every deletion**.
 
 | Tier | Meaning | Examples | In the dashboard |
 |---|---|---|---|
-| **Green** | Regenerable cache, no data loss | App caches, temp files, update downloads | Keep by default; you can choose Clear |
+| **Green** | Regenerable cache, no data loss | Eligible application cache with confirmed recovery and all required checks | Keep by default; you can choose Clear |
 | **Yellow** | Regenerable at a cost, or an app is affected | Chat transcripts, `node_modules`, `.venv`, VM images, model files | Keep by default; the cost is shown |
 | **Grey** | In use, unknown, or evidence incomplete | An item a server is running from | Keep or Check first, never Clear |
 | **Red** | Personal or irreplaceable | Documents, backups, credentials, memory files, browser profiles | Shown, locked |
 
 ## Quick start
 
-Pick one way in. Either way, **pin a release**: do not let an agent fetch and follow instructions from a live URL.
+This is the **PTN10062003** fork. Select a reviewed full commit ID from this fork or an attested fork release.
+Before opening a checkout in an agent or invoking a plugin, compare its files with that reference using
+[the install verification instructions](SECURITY.md#verify-before-loading-ballast). Keep your reference outside the installation.
 
-**A. Claude Code plugin** (one install, pinned to a release tag)
+**Checkout with the offline dashboard.** Clone with `git clone -c core.autocrlf=false https://github.com/PTN10062003/Ballast-personal-.git`.
+Use `git -C Ballast-personal- checkout --detach YOUR_REVIEWED_COMMIT`, then verify the checkout against
+the same full commit. After verification, open that folder in your agent and say **“Read AGENTS.md and run cleanup.md.”**
 
-```
-/plugin marketplace add chittychat-studio/Ballast#v0.1.4
-/plugin install ballast@ballast
-```
+**Installed plugin with a Markdown report.** Add the verified local marketplace using the instructions for
+[Claude Code](providers/claude.md) or [Codex](providers/codex.md). Verify the installed plugin directory
+before invoking Ballast. Keep automatic updates off and reverify after updates.
 
-Then run `/ballast:ballast`. Leave plugin auto-update off and update on purpose. A plugin install does not run the
-checksum check below, so if you want that, use B.
-
-The same folder is a **Codex plugin**: `codex plugin marketplace add chittychat-studio/Ballast --ref v0.1.4`, then
-open `/plugins` in Codex and install Ballast ([notes](providers/codex.md)).
-
-The plugin is the [`plugin`](plugin) folder: the instructions and the catalog, and nothing else. It does **not**
-include the dashboard page, because Claude's plugin directory accepts only text and pictures from publishers it has
-not verified. A plugin install shows the same results as a table in the chat. For the page, use B.
-
-**B. Clone** (works with any agent)
-
-```
-git clone --branch v0.1.4 https://github.com/chittychat-studio/Ballast.git
-```
-
-Each release has a checksum file and a build attestation, so you can check what you downloaded
-([how](SECURITY.md#verifying-a-release)). Open your agent in the cloned folder and say:
-**"Read AGENTS.md and run cleanup.md."**
-
-Then, either way:
-
-1. Read [cleanup.md](plugin/cleanup.md) and [permissions.md](plugin/permissions.md) yourself. They are short.
-2. For a recurring check, say: **"Run weekly.md."** (Stay present: it never runs unattended.)
+Read [cleanup.md](plugin/cleanup.md) and [permissions.md](plugin/permissions.md) before use. For a
+recurring check, say **“Run weekly.md.”** Stay present for the two consent questions and final approval.
 
 ### Example prompts
 
 With the plugin installed, or with your agent open in the cloned folder, any of these starts Ballast. Each one
-begins with the version check and the two consent questions, and the scan is read-only.
+begins with the installation verification and the two consent questions, and the scan is read-only.
 
 - **"I'm low on disk space. Find what my AI tools have left behind."** A full scan, then the dashboard link with
   everything sorted into tiers.
+- **"Show how much space Codex uses and check why my removed project still appears in the sidebar."**
+  Ballast reports logical storage sizes and summarizes which chats it could match to current projects.
+  You can request either check on its own. Both are read-only. [Codex diagnosis](plugin/catalog/codex-storage.md)
 - **"My laptop is struggling. What is holding memory and GPU memory right now?"** Looks at leftover processes
   (MCP servers, headless browsers, model runners) and the graphics memory they hold.
 - **"Run the weekly Ballast check and show me what has grown since last time."** Follows
@@ -115,9 +96,9 @@ instructions if you tell it to read `AGENTS.md`.
 
 <sub>A picture of the dashboard with example data. Your own scan fills it with your folders.</sub>
 
-After a scan your agent fills the data block of [`dashboard/ballast-dashboard.html`](dashboard/ballast-dashboard.html)
-and gives you a link to a local copy. Open the template directly to see it with example data. The page comes with
-a clone (Quick start B); a plugin install has no page and shows the same information as a table in the chat.
+After a scan your agent uses the verified report generator to create a local page from
+[`dashboard/ballast-dashboard.html`](dashboard/ballast-dashboard.html). Open the template directly to see
+example data. The checkout includes the page. An installed plugin shows the report as a table in chat.
 
 - **Header:** your free-space bar and target, on every tab.
 - **Overview (opens here):** the last cleanup, what can be cleared (with tick boxes), and your folders by tool, each with
@@ -163,7 +144,7 @@ runners holding VRAM are `planned` until someone with that hardware confirms the
 
 ## Support
 
-Questions and bugs: [open an issue](https://github.com/chittychat-studio/Ballast/issues) (there are forms for a
+Questions and bugs: [open an issue](https://github.com/PTN10062003/Ballast-personal-/issues) (there are forms for a
 bug, a wrong or harmful catalog row, and a new row). Security problems: report them privately, as described in
 [SECURITY.md](SECURITY.md).
 

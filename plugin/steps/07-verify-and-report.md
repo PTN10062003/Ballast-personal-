@@ -2,7 +2,9 @@
 
 ## 1. Re-measure
 
-Measure free space again and compare with the start. Report the actual change, not an estimate.
+Re-identify each affected volume and measure its free bytes again using the same API. Report its
+volume root, before/after GiB and signed observed delta. If it was remounted or cannot be measured,
+report unknown. Other writers may affect the delta.
 
 ## 2. Check that the user's tools still work
 
@@ -20,7 +22,7 @@ recommended and the permission you need from the user.
 
 After any deletion, give the user a **new dashboard link** by default. Re-measure what you touched, rebuild the page
 ([dashboard.md](../dashboard.md)), and add a `runs` block with your measured numbers: free space before and after,
-items and GB cleared, items skipped (with the reasons from your log), and items that failed (with the reason). The page
+items and logical GiB handled, pending bin bytes, items skipped (with the reasons from your log), and items that failed (with the reason). The page
 then opens on a **Results** view with those numbers. Quote only what you measured; a run's free space can fall if a
 program wrote files at the same time, and the page says so. With no template (a plugin install), show the Markdown
 dashboard again with the same numbers and say that yourself.
@@ -28,15 +30,16 @@ dashboard again with the same numbers and say that yourself.
 ## 4. Offer to empty the Recycle Bin (only now)
 
 If the user asks you to empty the Recycle Bin on its own, without a cleanup run, skip the wait for section 2, but
-everything else below still applies. Otherwise, only after section 2 has shown the tools work, offer to empty it. Warn that this removes everything in it, not only
-what Ballast moved, and wait for approval (H0). Follow BIN-001 in
+everything else below still applies. Otherwise, only after section 2 has shown the tools work, offer to
+empty the current user's Bin on the selected volume. This includes entries from other applications and
+earlier sessions. Wait for approval (H0). Follow BIN-001 in
 [catalog/temp-and-recycle-bin.md](../catalog/temp-and-recycle-bin.md): show the count, size and dates, ask the user to
-open the Bin and look, then ask a separate question before emptying.
+open that volume's Bin and look, then ask a separate question naming the same volume before emptying.
 
 ## 5. Compare with the target
 
 ```
-Free before 57.9 GB -> now 90.1 GB   (target 90 GB)
+D:\ free before 57.9 GiB -> now 90.1 GiB   (target 90 GiB)
 ```
 
 If short, say by how much and what Yellow or blocked items could close the gap. Do not pressure the user.

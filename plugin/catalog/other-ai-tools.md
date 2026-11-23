@@ -7,6 +7,10 @@ tools) are `planned` and Grey: none of them has been observed or removed.
 
 Prefer the tool's own cleanup or uninstall command when it has one.
 
+OT-001 and OT-002 describe whole application folders and stay Grey. On request, use the
+[Codex storage and sidebar diagnosis](codex-storage.md) to explain their contents or chat ownership.
+Keep protected files Red. Diagnostic categories do not create cleanup rows.
+
 | ID | Path | What it is | Tier | Evidence before delete | Cost / rebuild | Notes |
 |---|---|---|---|---|---|---|
 | OT-001 | `%LOCALAPPDATA%\OpenAI\Codex` | Codex app data (0.67 GB seen) | Grey | Inspect children; none in use | Unknown until inspected | Contents not inspected |

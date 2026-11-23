@@ -12,8 +12,9 @@ Three promises to the user:
 
 Before anything destructive, show a numbered manifest. Each line is a **full path, unshortened and unredacted**
 (redact only in a copy the user will share), its size, and its tier. For a process: ID, start time, path and what
-it does. The approval applies to this manifest and nothing else. If the contents of a folder change before you
-run, stop and ask again.
+it does. Include scan ID, actual volume and removal method. For a group, show its ID, count, logical
+bytes, SHA-256 and link to the complete manifest described in [step 6](steps/06-approve-and-run.md).
+Ask for approval of that exact binding. Skip entries that change and require a new review to act on them.
 
 Processes are **never Green** and are never covered by a group approval such as "all green".
 
@@ -22,7 +23,8 @@ Processes are **never Green** and are never covered by a group approval such as 
 Use this shape for every deletion:
 
 ```
-Delete:   <full path>                Size: <n GB>
+Scan:     <scan ID>                  Volume: <native volume root>
+Delete:   <full path or bound group> Selected logical size: <n GiB>
 Tier:     Green | Yellow             Made by: <tool>  (attribution: High | Medium | Low)
 Why:      <what you measured that placed it in this tier>
 Cost:     <none | rebuild with <command> | re-downloads ~<n GB> | loses <what>>

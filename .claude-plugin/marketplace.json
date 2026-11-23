@@ -1,8 +1,8 @@
 {
-  "name": "ballast",
+  "name": "ballast-personal",
   "owner": {
-    "name": "chittychat-studio",
-    "url": "https://github.com/chittychat-studio"
+    "name": "PTN10062003",
+    "url": "https://github.com/PTN10062003"
   },
   "description": "Ballast: ask-first cleanup of the leftovers AI tools leave behind.",
   "plugins": [

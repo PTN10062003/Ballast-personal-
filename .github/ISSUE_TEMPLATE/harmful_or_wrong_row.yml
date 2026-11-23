@@ -7,7 +7,7 @@ body:
       value: |
         A row that caused harm is switched to `disabled` quickly. If you lost data, say so plainly. Before you send
         this, remove usernames and personal paths. Write `%USERPROFILE%`, `%LOCALAPPDATA%` or `~` instead.
-        See [SAFETY.md](https://github.com/chittychat-studio/Ballast/blob/main/SAFETY.md).
+        See [SAFETY.md](https://github.com/PTN10062003/Ballast-personal-/blob/main/SAFETY.md).
   - type: input
     id: row-id
     attributes:

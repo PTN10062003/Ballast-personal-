@@ -11,21 +11,11 @@ is not saved yet. So nothing in Temp is Green. It is Yellow when the evidence is
 
 ### Which folder
 
-On Windows the user's Temp folder is `%LOCALAPPDATA%\Temp`. The variable `%TEMP%` points at the same place, but it can
-be an 8.3 short name such as `C:\Users\USERNA~1\AppData\Local\Temp`, and the path guard in
-[steps/06](../steps/06-approve-and-run.md) refuses short names. **Always use the long form.** Confirm it is the same
-folder before you rely on it:
-
-```powershell
-$short = $env:TEMP; $long = Join-Path $env:LOCALAPPDATA 'Temp'
-$a = Get-Item -LiteralPath $short -Force; $b = Get-Item -LiteralPath $long -Force
-$same = ($a.CreationTimeUtc -eq $b.CreationTimeUtc) -and `
-  ((Get-ChildItem -LiteralPath $short -Force | Select-Object -ExpandProperty Name | Sort-Object) -join '|') -eq `
-  ((Get-ChildItem -LiteralPath $long  -Force | Select-Object -ExpandProperty Name | Sort-Object) -join '|')
-```
-
-If `$same` is false (or any command fails), say so and ask the user which folder they mean. **Never delete the Temp
-folder itself, only things inside it.** Never use a wildcard such as `Temp\*` to delete: delete each approved path.
+Use the long path `%LOCALAPPDATA%\Temp` inside the trusted profile. Compare its OS volume and file ID
+with those of `%TEMP%` using opened directory handles or `os.path.samefile` in local Python. A mismatch
+or unreadable identity means ask which folder the user means. Run the
+[path guard](../steps/06-approve-and-run.md#path-guard) before descending. The Temp root is always
+protected. Use only literal, individually checked child paths.
 
 ### How to look (read-only)
 
@@ -38,41 +28,44 @@ limit.
 
 | ID | What | Tier | Evidence before deleting | Cost / rebuild | Status |
 |---|---|---|---|---|---|
-| TMP-001 | A folder or file directly inside `%LOCALAPPDATA%\Temp` that no other row names | Yellow when all of this holds, else Grey | **Last used:** shown, never a gate (a "Heads up" if it changed in the last day, since it may hold unsaved work; the user decides). **In use:** no file inside can be opened exclusively (test below), and no running process is started from inside it. **No links or junctions** inside. **Not a document's recovery file:** names starting `~$` or `~WRL` are Grey | Whatever program left it loses that leftover. A half-finished installer cannot resume. Permanent: the Recycle Bin is not used (see the method below) | `review` |
-| TMP-002 | `pip-unpack-*` and other `pip-*` folders (pip's own unpacking folders) | Yellow when no pip is running and nothing inside is open | A local yes/no match that no running process has `pip` in its command line (never print the command line); nothing inside can be opened exclusively; no links | pip re-downloads and re-unpacks if it needs them again | `review` |
+| TMP-001 | A folder or file directly inside `%LOCALAPPDATA%\Temp` that no other row names | Yellow when all of this holds, else Grey | **Last used:** shown, never a gate (a "Heads up" if it changed in the last day, since it may hold unsaved work; the user decides). **In use:** passes the [in-use test](#in-use-test), and no running process is started from inside it. **No links or junctions** inside. **Not a document's recovery file:** names starting `~$` or `~WRL` are Grey | Whatever program left it loses that leftover. A half-finished installer cannot resume. Permanent: the Recycle Bin is not used (see the method below) | `review` |
+| TMP-002 | `pip-unpack-*` and other `pip-*` folders (pip's own unpacking folders) | Yellow when no pip is running and nothing inside is open | A local yes/no match that no running process has `pip` in its command line (never print the command line); passes the [in-use test](#in-use-test); no links | pip re-downloads and re-unpacks if it needs them again | `review` |
 | TMP-003 | `claude\<project>\<session-id>\` (Claude Code session scratch) | As [CC-006](claude-code.md): Yellow when the session is finished, Grey if live | As CC-006. Never the folder of the session you are in | As CC-006 | `review` |
 | TMP-004 | Anything in Temp that is in use, locked, unreadable, contains a link, or has a document-recovery name | **Grey** | Not selectable. Report the total and what is holding each one; it can be re-checked after the program closes. Recent changes alone do **not** make an item Grey | Not applicable | `review` |
 | TMP-005 | `C:\Windows\Temp` (system Temp) | Grey | It is outside the user's profile, so the path guard refuses it, and clearing it needs administrator rights. Do not elevate. Show the user how to clear it themselves (Windows Settings, System, Storage, Temporary files) | Not applicable | `planned` |
-| TMP-006 | `remotion-webpack-bundle-*`, `remotion-v*-assets*` and `puppeteer_dev_chrome_profile-*` (video-rendering and headless-browser tools that AI coding agents often drive) | Yellow when nothing is open and no render or browser process is running; **a render in progress makes them Grey** | Process list (yes/no match for `node`, `remotion` or a headless browser started from inside the folder); nothing inside can be opened exclusively; no links. Bundles can be about 1.9 GB each and are created again for every render | The next render rebuilds the bundle, which takes time | `review` (seen: two to three 1.9 GB bundles appeared during one render; nothing was deleted) |
+| TMP-006 | `remotion-webpack-bundle-*`, `remotion-v*-assets*` and `puppeteer_dev_chrome_profile-*` (video-rendering and headless-browser tools that AI coding agents often drive) | Yellow when nothing is open and no render or browser process is running; **a render in progress makes them Grey** | Process list (yes/no match for `node`, `remotion` or a headless browser started from inside the folder); passes the [in-use test](#in-use-test); no links. Bundles can be about 1.9 GB each and are created again for every render | The next render rebuilds the bundle, which takes time | `review` (seen: two to three 1.9 GB bundles appeared during one render; nothing was deleted) |
 
-### Many small files: the group rule
+### Many small files
 
-Temp usually holds thousands of files. Do not ask the user to approve ten thousand lines one by one, and do not drop
-the manifest either. Instead:
-
-1. **Show the biggest ones as their own items:** each top-level child of 50 MB or more (the 30 largest), each with its
-   full path.
-2. **Everything else that qualifies becomes one group item** ("Everything else in Temp that qualifies"). For a group,
-   write the **full manifest, one full path per line, to a text file in your own temporary folder**, and tell the user
-   its path so they can open it. The dashboard item lists the 50 largest paths, and its *why* line states the total
-   number of paths, the total size, the rule it was built from, and the manifest file's path.
-3. **The approval request names** the count, the total size, the rule (which row, which checks) and the manifest
-   file. The user's approval covers **exactly the lines in that file**, nothing added later.
-4. **Re-check each path right before deleting it** (the checks above and the path guard). Skip anything that changed,
-   became in use, or is no longer on the manifest, and count it as skipped.
-5. **Log counts and reasons:** deleted, skipped (and why), locked, failed. Delete the manifest file at the end
-   (H12), unless the user asks to keep it.
+Use the scan-time manifest and approval format in [step 6](../steps/06-approve-and-run.md). Show up to
+30 of the largest qualifying top-level children of at least 50 MiB as individual items. Group the
+remaining eligible entries without overlap. Include the full local manifest link, scan and group IDs,
+volume, count, digest, logical size, Permanent method, catalog rule and a clearly labelled sample
+of up to 50 paths. Keep the full list fixed through final approval. Recheck each approved entry and
+record its result or individual skip reason.
 
 ### In-use test
 
-A file is "in use" when it cannot be opened exclusively. Do this on each file inside the item before deleting. It
-changes nothing:
+For **every Temp row**, inspect the item and every file in it. An item passes only if enumeration succeeds
+and each file opens exclusively. Check at scan time and immediately before the operation, after the path
+guard both times. A lock, unreadable entry or enumeration failure withholds the whole candidate at selection
+or records an individual skip after approval. An empty directory still needs all other applicable checks.
 
 ```powershell
-function InUse([string]$p) { try { $s = [IO.File]::Open($p, 'Open', 'ReadWrite', 'None'); $s.Close(); $false } catch { $true } }
+function Test-TempUnlocked([string]$path) {
+    try {
+        $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+        $files = if ($item.PSIsContainer) {
+            Get-ChildItem -LiteralPath $path -Recurse -Force -File -ErrorAction Stop
+        } else { $item }
+        foreach ($file in $files) {
+            $handle = [IO.File]::Open($file.FullName, 'Open', 'Read', 'None')
+            $handle.Dispose()
+        }
+        return $true
+    } catch { return $false }
+}
 ```
-
-An error other than "in use" (for example access denied) also counts as in use, because the answer is unknown (H2).
 
 ### Method
 
@@ -84,37 +77,71 @@ section 5, one path at a time.
 
 | ID | What | Tier | Evidence before emptying | Cost | Status |
 |---|---|---|---|---|---|
-| BIN-001 | The Recycle Bin on the system drive, for the current user | **Grey** until the user confirms they have looked, then **Yellow** | **Unsaved or needed work:** the user opens the Recycle Bin themselves and confirms nothing in it is needed (their answer, this session). **How to get it back:** it cannot be restored once emptied | **Everything in the Bin is lost for good**: files that were there before this session, files from other programs, and files Ballast moved there. Free space returns only when the Bin is emptied | `review` (reading observed; emptying not tested) |
+| BIN-001 | Current user's Recycle Bin on the scanned local fixed volume | Grey until inspected, then Yellow for a separate confirmation | Match the scan's volume ID, list and measure this volume's entries, and ask the user to inspect them | Every entry on that volume is permanently removed, including items from other programs and earlier sessions | `review` (emptying only mock-tested) |
 
-### How to look (read-only)
+### Inventory on Windows
+
+Read the shell's combined view locally. Filter by the **actual bin entry's drive** before returning any
+metadata. Keep the volume ID and full inventory in local scan state. The helper rejects unscoped entries,
+incomplete metadata and volume changes. Use the profile volume from the scan as `$drive` (one letter) and
+its recorded OS volume ID as `$volumeId`.
 
 ```powershell
-$bin = (New-Object -ComObject Shell.Application).NameSpace(0xA)
-$bin.Items().Count
+function Read-BallastBin([string]$drive, [string]$volumeId) {
+    if ($drive -notmatch '^[A-Za-z]$' -or -not $volumeId) { throw 'Missing scan volume' }
+    $drive = $drive.ToUpperInvariant()
+    $volume = Get-Volume -DriveLetter $drive -ErrorAction Stop
+    if ($volume.DriveType -ne 'Fixed' -or $volume.UniqueId -ne $volumeId) { throw 'Volume changed' }
+    $bin = (New-Object -ComObject Shell.Application -ErrorAction Stop).NameSpace(0xA)
+    if (-not $bin) { throw 'Bin unavailable' }
+    $collection = $bin.Items()
+    if ($null -eq $collection) { throw 'Inventory unavailable' }
+    $rows = @(foreach ($entry in $collection) {
+        $id = [string]$entry.Path
+        if ($id -notmatch '^[A-Za-z]:\\') { throw 'Unknown bin volume' }
+        if ($id.Substring(0,1) -ne $drive) { continue }
+        $size = $entry.ExtendedProperty('System.Size')
+        $date = $entry.ExtendedProperty('System.Recycle.DateDeleted')
+        $from = $entry.ExtendedProperty('System.Recycle.DeletedFrom')
+        if ($null -eq $size -or [string]$size -eq '' -or [long]$size -lt 0 -or
+            -not $date -or -not $from -or -not $entry.Name) { throw 'Incomplete bin entry' }
+        [pscustomobject]@{ id = $id; name = $entry.Name; from = $from
+            bytes = [long]$size; deleted = ([datetime]$date).ToUniversalTime().ToString('o') }
+    })
+    [long]$bytes = 0
+    foreach ($row in $rows) { $bytes += $row.bytes }
+    [pscustomobject]@{ drive = $drive; volumeId = $volume.UniqueId; count = $rows.Count
+        bytes = $bytes; rows = @($rows | Sort-Object id) }
+}
+
+function Get-BinQuestion($inventory) {
+    "Permanently empty the Recycle Bin on {0}: ({1} entries, {2} logical bytes), including older items?" -f
+        $inventory.drive, $inventory.count, $inventory.bytes
+}
 ```
 
-For each item's name, original folder, size and date deleted, read the shell view's detail columns
-(`$bin.GetDetailsOf($item, <column>)`; find the column numbers by listing `0..20 | % { $bin.GetDetailsOf($null, $_) }`; on the author's Windows 11 laptop that gave Name 0, Original Location 1, Date Deleted 2, Size 3, but the numbers can differ, so list them first. Reading an item's values was not tested because the Bin was empty).
-Read names, sizes and dates only (H8). Report: how many items, the total size, the oldest and newest deletion dates, and
-the 20 largest items (name and original folder). If you moved items to the Bin during this session, say how many of the
-Bin's items those are, from your own log, so the user sees how much of it Ballast put there.
+Show only this volume's count, total logical bytes, oldest and newest deletion dates and 20 largest
+items with their original folders. Identify which entries Ballast moved from the session log. An unreadable
+or ambiguous inventory stays Grey. Keep the Bin separate from generic file selections.
 
 ### Emptying it
 
-1. **Show the summary above and ask the user to open the Recycle Bin and look.** Do not empty it for them.
-2. **After they confirm they have looked**, ask a separate question: *"Empty the Recycle Bin on C: now? Everything in
-   it is lost for good, including files that were there before today."* A general "yes" to cleaning up does not count.
-3. Only then:
+1. Save `$reviewed = Read-BallastBin $drive $volumeId` and show that volume's summary. Ask the user
+   to inspect its entries themselves and wait for confirmation they have done so.
+2. Show `Get-BinQuestion $reviewed` and wait for a separate explicit approval of the named volume, contents
+   and Permanent method. Keep the reviewed inventory tied to this scan. A changed list needs fresh review.
+3. Immediately before acting, run this block with the inventory saved at step 1. A missing or failed
+   recheck stops the operation. Emptying a busy bin whose contents keep changing should be left to the user.
 
-   ```powershell
-   Clear-RecycleBin -DriveLetter C -Force
-   ```
+```powershell
+$current = Read-BallastBin $reviewed.drive $reviewed.volumeId
+if (($current | ConvertTo-Json -Depth 4 -Compress) -cne
+    ($reviewed | ConvertTo-Json -Depth 4 -Compress)) { throw 'Bin changed. Review again.' }
+Clear-RecycleBin -DriveLetter $reviewed.drive -Force -ErrorAction Stop
+```
 
-4. Re-measure free space and report the actual change.
-
-Never delete anything inside the hidden `$Recycle.Bin` folder by path: it is system structure, and other users' items
-live there. Use the command above only. Other drives' Bins are out of scope, as the path guard allows only the system
-drive's profile.
+4. Re-read the same volume's bin, re-measure its free space, and report the observed result.
+   Never delete inside the hidden `$Recycle.Bin` directory by path.
 
 ## macOS and Linux (starter rows, never observed)
 
@@ -122,8 +149,8 @@ drive's profile.
 |---|---|---|---|---|---|
 | TMP-M1 | `$TMPDIR` (macOS, per-user temp under `/var/folders/...`) | User temp | Grey | Same checks as TMP-001; find the path with `echo $TMPDIR`; do not guess | `planned` |
 | TMP-L1 | `$TMPDIR` or `/tmp` entries **owned by the current user** (Linux) | User temp | Grey | `/tmp` is shared: never touch entries owned by anyone else | `planned` |
-| BIN-M1 | `~/.Trash` (macOS) | Trash | Grey | Same two-step rule as BIN-001; empty with the Finder, not `rm` | `planned` |
-| BIN-L1 | `~/.local/share/Trash` (Linux) | Trash | Grey | Same two-step rule; prefer `gio trash --empty` after the user confirms | `planned` |
+| BIN-M1 | `~/.Trash` (macOS) | Trash | Grey | Report only the measured volume. Keep emptying manual when the host's Trash operation combines volumes | `planned` |
+| BIN-L1 | `~/.local/share/Trash` (Linux) | Trash | Grey | Report only the measured volume. A combined Trash operation cannot implement approval for one volume | `planned` |
 
 ## Verified
 

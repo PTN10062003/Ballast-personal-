@@ -20,7 +20,8 @@ A catalog row can name a specific item below Red only where this list says "unle
 - SSH, GPG and signing keys (`.ssh`, `.gnupg`), password-manager data, wallets and keystores.
 - Recovery codes, two-factor backup codes, and licence keys.
 - Credentials and tokens: files named like `credentials`, `auth`, `oauth`, `token`, `.env`, `.netrc`, key files.
-- Browser profile data: logins, cookies, history, bookmarks, extensions, local storage. (Browser **caches** may be
+- Browser profile data: logins, cookies, history, bookmarks, extensions, local storage, and all service-worker
+  `CacheStorage` data. (The ordinary browser **caches** explicitly named in the catalog may be
   Green in a catalog row; the profile itself is Red.)
 - Anything an app needs in order to keep you signed in.
 

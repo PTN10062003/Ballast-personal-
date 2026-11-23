@@ -2,15 +2,11 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-oem4DEBHMPDILA9Hb24uhcosOsS1ROJYyc7YEIQuNic='; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Ballast dashboard template. Your agent fills only the JSON block with id ballast-data. It never edits the code. See dashboard.md. -->
 <title>Ballast</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='2' y='2' width='44' height='44' rx='10' fill='%232a78cc'/%3E%3Ccircle cx='24' cy='12' r='3.6' fill='none' stroke='white' stroke-width='2.4'/%3E%3Cpath d='M17 17.5h14l5 15a2 2 0 0 1-1.9 2.6H13.9a2 2 0 0 1-1.9-2.6z' fill='white'/%3E%3Cpath d='M9 39.5c3-2 6-2 9 0s6 2 9 0 6-2 9 0' fill='none' stroke='white' stroke-width='2' opacity='.85'/%3E%3C/svg%3E">
-<script>
-/* apply the saved theme before first paint so a refresh does not flash light */
-try{var t=localStorage.getItem('ballast-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}
-</script>
 <style>
 :root{
   --bg:#eceef1; --panel:#ffffff; --ink:#23272c; --muted:#5b6673; --line:#d2d6dc; --track:#e4e7eb;
@@ -298,7 +294,7 @@ textarea.req{width:100%;resize:vertical;padding:8px;border:1px solid var(--line)
     </svg>
     <h1>Ballast</h1>
     <span class="exlabel" id="example" hidden>EXAMPLE DATA. Ask your agent to run a scan to see your own.</span>
-    <div class="hgauge" aria-label="Free space, always shown"><div class="gline"><span id="gtext" aria-live="polite"></span><label class="tgt">Target <input id="target" type="number" min="1" step="1" placeholder="none" aria-label="Your target free space in GB"> GB</label></div>
+    <div class="hgauge" aria-label="Free space, always shown"><div class="gline"><span id="gtext" aria-live="polite"></span><label class="tgt">Target <input id="target" type="number" min="1" step="1" placeholder="none" aria-label="Your target free space in GiB"> GiB</label></div>
         <div class="prog"><div class="ptrack" id="gauge" role="img"></div><div class="ppct" id="ppct"></div></div></div>
   </header>
 
@@ -376,7 +372,7 @@ textarea.req{width:100%;resize:vertical;padding:8px;border:1px solid var(--line)
             <div class="addr" id="addr" aria-label="Location of the selected item"></div>
             <div id="chips" role="group" aria-label="Filter items" style="display:flex;gap:6px;flex-wrap:wrap"></div>
           </div>
-          <div class="colhead" aria-hidden="true"><div>Your choice</div><div>Name</div><div style="text-align:right">Size (GB)</div><div>Tier</div></div>
+          <div class="colhead" aria-hidden="true"><div>Your choice</div><div>Name</div><div style="text-align:right">Size (GiB)</div><div>Tier</div></div>
           <div id="tree"></div>
           <div class="status" id="status"></div>
         </section>
@@ -392,7 +388,7 @@ textarea.req{width:100%;resize:vertical;padding:8px;border:1px solid var(--line)
             <div class="row-inline" style="margin:0 0 8px;color:var(--ink)">
               <label>Group by <select id="rowDim"></select></label>
               <label>Split by <select id="colDim"></select></label>
-              <label>Show <select id="measure"><option value="gb">Size in GB</option><option value="count">Number of items</option></select></label>
+              <label>Show <select id="measure"><option value="gb">Size in GiB</option><option value="count">Number of items</option></select></label>
             </div>
             <div style="overflow-x:auto"><table class="pivot" id="pivot"></table></div>
           </div>
@@ -457,47 +453,213 @@ textarea.req{width:100%;resize:vertical;padding:8px;border:1px solid var(--line)
 
 <script type="application/json" id="ballast-data">
 {
-  "schema": 1,
+  "schema": 2,
   "example": true,
   "scanDate": "example",
-  "freeGB": 41.0,
-  "totalGB": 256,
-  "targetGB": 60,
-  "ballastPath": "%USERPROFILE%\\Ballast",
-  "gpu": {"name": "Example graphics card", "dedicatedUsedGB": 3.1, "dedicatedTotalGB": 8, "sharedUsedGB": 0.4},
-  "runs": [{"label": "Example cleanup", "freeBeforeGB": 30.2, "freeAfterGB": 41.0, "cleared": 3, "clearedGB": 10.8, "skipped": 1, "skippedWhy": "1 changed after the scan", "failed": 0}],
+  "freeGiB": 41.0,
+  "totalGiB": 256,
+  "targetGiB": 60,
+  "ballastPath": "D:\\Users\\Example\\Ballast",
+  "gpu": {
+    "name": "Example graphics card",
+    "dedicatedUsedGiB": 3.1,
+    "dedicatedTotalGiB": 8,
+    "sharedUsedGiB": 0.4
+  },
+  "runs": [
+    {
+      "label": "Example cleanup",
+      "freeBeforeGiB": 30.2,
+      "freeAfterGiB": 41.0,
+      "cleared": 3,
+      "clearedGiB": 10.8,
+      "skipped": 1,
+      "skippedWhy": "1 changed after the scan",
+      "failed": 0,
+      "volume": "D:\\"
+    }
+  ],
   "scopeNote": "Example: your user folder and AppData\\Local were checked. Roaming, ProgramData and other drives were not. System folders are never offered.",
   "items": [
-    {"id": 1, "name": "Browser-style app caches", "tool": "Claude desktop", "tier": "Green", "sizeGB": 0.70, "maker": "High", "method": "Permanent",
-     "catalogRow": "CD-002 (example)", "why": "Regenerable cache inside the app's own data folder, and the app is closed.", "cost": "Rebuilt as you use the app.",
-     "paths": [{"path": "%LOCALAPPDATA%\\Claude-Data\\<package-family>\\Cache", "sizeGB": 0.40}, {"path": "%LOCALAPPDATA%\\Claude-Data\\<package-family>\\Code Cache", "sizeGB": 0.30}],
-     "evidence": [{"id": "E1", "state": "ok", "text": "Newest file is 3 weeks old."}, {"id": "E2", "state": "ok", "text": "App is not running."}, {"id": "E3", "state": "ok", "text": "Cache, not an installed program."}, {"id": "E8", "state": "ok", "text": "Rebuilt automatically."}]},
-    {"id": 2, "name": "Cowork virtual machine bundle", "tool": "Claude desktop", "tier": "Yellow", "sizeGB": 10.8, "maker": "High", "method": "Recycle Bin",
-     "catalogRow": "CD-001 (example)", "why": "The app is closed and the VM worker is stopped.", "cost": "Wipes Cowork session data in the VM. The app rebuilds it (about 9 GB) on next use.",
-     "paths": [{"path": "%LOCALAPPDATA%\\Claude-Data\\<package-family>\\vm_bundles\\claudevm.bundle", "sizeGB": 10.8}],
-     "evidence": [{"id": "E1", "state": "note", "text": "Modified today. Re-checked right before any delete."}, {"id": "E2", "state": "ok", "text": "No process holds the files."}, {"id": "E8", "state": "note", "text": "Rebuild expected, not yet confirmed."}]},
-    {"id": 3, "name": "Old chat transcripts", "tool": "Claude Code", "tier": "Yellow", "sizeGB": 3.3, "maker": "High", "method": "Recycle Bin",
-     "catalogRow": "CC-001 (example)", "why": "Session transcripts for sessions that are not running. Each project's memory folder is kept.", "cost": "Old chats can no longer be resumed or searched.",
-     "paths": [{"path": "%USERPROFILE%\\.claude\\projects\\<project>\\<session-id>.jsonl", "sizeGB": 3.3}],
-     "evidence": [{"id": "E1", "state": "ok", "text": "Newest write is older than 7 days."}, {"id": "E2", "state": "ok", "text": "No live session uses them."}, {"id": "E7", "state": "note", "text": "The memory folder next to them is protected and stays."}]},
-    {"id": 4, "name": "Plugin copies", "tool": "Claude Code", "tier": "Grey", "sizeGB": 0.8, "maker": "High", "method": "Not offered",
-     "catalogRow": "CC-004 (example)", "why": "Would be Yellow, but live sessions use plugins now.", "cost": "Plugins re-download.", "missing": "End or confirm the live sessions, then re-check.",
-     "paths": [{"path": "%USERPROFILE%\\.claude\\plugins\\cache", "sizeGB": 0.8}],
-     "evidence": [{"id": "E2", "state": "block", "text": "2 live sessions are running."}]},
-    {"id": 5, "name": "Dev server virtual environment", "tool": "Your projects (agent-made)", "tier": "Grey", "sizeGB": 0.6, "maker": "Medium", "method": "Not offered",
-     "catalogRow": "No catalog row yet", "why": "A server is running from it right now.", "cost": "Recreate and reinstall.", "missing": "Stop the server (your call), then re-check.",
-     "paths": [{"path": "%USERPROFILE%\\projects\\example-app\\.venv", "sizeGB": 0.6}],
-     "evidence": [{"id": "E2", "state": "block", "text": "A server process runs from this environment."}]},
-    {"id": 6, "name": "Unidentified tool folder", "tool": "Unknown maker", "tier": "Grey", "sizeGB": 0.8, "maker": "Low", "method": "Not offered",
-     "catalogRow": "No catalog row", "why": "Cannot tell what made it or whether anything needs it.", "cost": "Unknown.", "missing": "Identify the maker, then check E2 to E4.",
-     "paths": [{"path": "%LOCALAPPDATA%\\example-unknown-tool", "sizeGB": 0.8}], "evidence": []},
-    {"id": 7, "name": "Documents\\Backup", "tool": "Your files and apps", "tier": "Red", "sizeGB": 8.6, "maker": "n/a", "method": "Not offered",
-     "catalogRow": "Protected list", "why": "Personal files, named backup. Never offered.", "cost": "Not applicable.",
-     "paths": [{"path": "%USERPROFILE%\\Documents\\Backup", "sizeGB": 8.6}], "evidence": [{"id": "E7", "state": "block", "text": "Name matches the backup pattern."}]},
-    {"id": 8, "name": "Installed programs (package manager)", "tool": "Your files and apps", "tier": "Red", "sizeGB": 0.8, "maker": "n/a", "method": "Not offered",
-     "catalogRow": "Protected list", "why": "Installed programs, not a cache.", "cost": "Not applicable.",
-     "paths": [{"path": "%LOCALAPPDATA%\\Microsoft\\WinGet\\Packages", "sizeGB": 0.8}], "evidence": [{"id": "E3", "state": "block", "text": "Package manifests show installed programs."}]}
-  ]
+    {
+      "id": 1,
+      "name": "Browser-style app caches",
+      "tool": "Claude desktop",
+      "tier": "Yellow",
+      "sizeGiB": 0.7,
+      "maker": "High",
+      "method": "Permanent",
+      "catalogRow": "CD-002",
+      "why": "Regenerable cache inside the app's own data folder, and the app is closed.",
+      "cost": "Rebuilt as you use the app.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\AppData\\Local\\Claude-Data\\ExamplePackage\\Cache", "sizeGiB": 0.4},
+        {"path": "D:\\Users\\Example\\AppData\\Local\\Claude-Data\\ExamplePackage\\Code Cache", "sizeGiB": 0.3}
+      ],
+      "evidence": [
+        {"id": "E1", "state": "ok", "text": "Newest file is 3 weeks old."},
+        {"id": "E2", "state": "ok", "text": "App is not running."},
+        {"id": "E3", "state": "ok", "text": "Cache, not an installed program."},
+        {"id": "E4", "state": "ok", "text": "No dependent application."},
+        {"id": "E5", "state": "ok", "text": "No unsaved work."},
+        {"id": "E6", "state": "ok", "text": "Local and unshared."},
+        {"id": "E7", "state": "ok", "text": "Protected patterns checked."},
+        {"id": "E8", "state": "ok", "text": "Rebuilt automatically."}
+      ],
+      "volume": "D:\\"
+    },
+    {
+      "id": 2,
+      "name": "Cowork virtual machine bundle",
+      "tool": "Claude desktop",
+      "tier": "Yellow",
+      "sizeGiB": 10.8,
+      "maker": "High",
+      "method": "Recycle Bin",
+      "catalogRow": "CD-001",
+      "why": "The app is closed and the VM worker is stopped.",
+      "cost": "Wipes Cowork session data in the VM. The app rebuilds it (about 9 GiB) on next use.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\AppData\\Local\\Claude-Data\\ExamplePackage\\vm_bundles\\claudevm.bundle", "sizeGiB": 10.8}
+      ],
+      "evidence": [
+        {"id": "E1", "state": "note", "text": "Modified today. Re-checked right before any delete."},
+        {"id": "E2", "state": "ok", "text": "No process holds the files."},
+        {"id": "E3", "state": "ok", "text": "No installed program."},
+        {"id": "E4", "state": "ok", "text": "No dependent application."},
+        {"id": "E5", "state": "ok", "text": "No unsaved work."},
+        {"id": "E6", "state": "ok", "text": "Local and unshared."},
+        {"id": "E7", "state": "ok", "text": "Protected patterns checked."},
+        {"id": "E8", "state": "note", "text": "VM rebuild costs time and a download; session data is lost."}
+      ],
+      "volume": "D:\\"
+    },
+    {
+      "id": 3,
+      "name": "Old chat transcripts",
+      "tool": "Claude Code",
+      "tier": "Yellow",
+      "sizeGiB": 3.3,
+      "maker": "High",
+      "method": "Recycle Bin",
+      "catalogRow": "CC-001",
+      "why": "Session transcripts for sessions that are not running. Each project's memory folder is kept.",
+      "cost": "Old chats can no longer be resumed or searched.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\.claude\\projects\\ExampleProject\\ExampleSession.jsonl", "sizeGiB": 3.3}
+      ],
+      "evidence": [
+        {"id": "E1", "state": "ok", "text": "Newest write is older than 7 days."},
+        {"id": "E2", "state": "ok", "text": "No live session uses them."},
+        {"id": "E3", "state": "ok", "text": "No installed program."},
+        {"id": "E4", "state": "ok", "text": "No dependent application."},
+        {"id": "E5", "state": "ok", "text": "No unsaved work."},
+        {"id": "E6", "state": "ok", "text": "Local and unshared."},
+        {"id": "E7", "state": "ok", "text": "The memory folder next to them is protected and stays."},
+        {"id": "E8", "state": "ok", "text": "Cost is recorded."}
+      ],
+      "volume": "D:\\"
+    },
+    {
+      "id": 4,
+      "name": "Plugin copies",
+      "tool": "Claude Code",
+      "tier": "Grey",
+      "sizeGiB": 0.8,
+      "maker": "High",
+      "method": "Not offered",
+      "catalogRow": "CC-004",
+      "why": "Would be Yellow, but live sessions use plugins now.",
+      "cost": "Plugins re-download.",
+      "missing": "End or confirm the live sessions, then re-check.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\.claude\\plugins\\cache", "sizeGiB": 0.8}
+      ],
+      "evidence": [
+        {"id": "E2", "state": "block", "text": "2 live sessions are running."}
+      ],
+      "volume": "D:\\"
+    },
+    {
+      "id": 5,
+      "name": "Dev server virtual environment",
+      "tool": "Your projects (agent-made)",
+      "tier": "Grey",
+      "sizeGiB": 0.6,
+      "maker": "Medium",
+      "method": "Not offered",
+      "catalogRow": "No catalog row yet",
+      "why": "A server is running from it right now.",
+      "cost": "Recreate and reinstall.",
+      "missing": "Stop the server (your call), then re-check.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\projects\\example-app\\.venv", "sizeGiB": 0.6}
+      ],
+      "evidence": [
+        {"id": "E2", "state": "block", "text": "A server process runs from this environment."}
+      ],
+      "volume": "D:\\"
+    },
+    {
+      "id": 6,
+      "name": "Unidentified tool folder",
+      "tool": "Unknown maker",
+      "tier": "Grey",
+      "sizeGiB": 0.8,
+      "maker": "Low",
+      "method": "Not offered",
+      "catalogRow": "No catalog row",
+      "why": "Cannot tell what made it or whether anything needs it.",
+      "cost": "Unknown.",
+      "missing": "Identify the maker, then check E2 to E4.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\AppData\\Local\\example-unknown-tool", "sizeGiB": 0.8}
+      ],
+      "evidence": [],
+      "volume": "D:\\"
+    },
+    {
+      "id": 7,
+      "name": "Documents\\Backup",
+      "tool": "Your files and apps",
+      "tier": "Red",
+      "sizeGiB": 8.6,
+      "maker": "n/a",
+      "method": "Not offered",
+      "catalogRow": "Protected list",
+      "why": "Personal files, named backup. Never offered.",
+      "cost": "Not applicable.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\Documents\\Backup", "sizeGiB": 8.6}
+      ],
+      "evidence": [
+        {"id": "E7", "state": "block", "text": "Name matches the backup pattern."}
+      ],
+      "volume": "D:\\"
+    },
+    {
+      "id": 8,
+      "name": "Installed programs (package manager)",
+      "tool": "Your files and apps",
+      "tier": "Red",
+      "sizeGiB": 0.8,
+      "maker": "n/a",
+      "method": "Not offered",
+      "catalogRow": "Protected list",
+      "why": "Installed programs, not a cache.",
+      "cost": "Not applicable.",
+      "paths": [
+        {"path": "D:\\Users\\Example\\AppData\\Local\\Microsoft\\WinGet\\Packages", "sizeGiB": 0.8}
+      ],
+      "evidence": [
+        {"id": "E3", "state": "block", "text": "Package manifests show installed programs."}
+      ],
+      "volume": "D:\\"
+    }
+  ],
+  "scanId": "example-scan",
+  "platform": "windows",
+  "volume": "D:\\"
 }
 </script>
 <script>
@@ -509,47 +671,101 @@ var EVL={E1:'Last used',E2:'In use now',E3:'Is it a program?',E4:'Anything depen
 var STL={ok:'Good',note:'Heads up',block:'Blocker',unknown:'Not checked',na:'Not relevant'};
 /* The page reads its data from the JSON block (id ballast-data). The agent fills data, never code. */
 var BLOCKED='If you cannot delete something (it is locked, needs administrator rights, or permission is denied), do not stop at "I can\'t". Tell me exactly what is blocking it, ask me for the permission you need, and show me the workaround or the exact command I can run myself.';
-function num(x,min,max){x=Number(x);return (isFinite(x)&&x>=min&&x<=max)?x:null;}
+function num(x,min,max){return Number.isFinite(x)&&x>=min&&x<=max?x:null;}
+function token(s){return typeof s==='string' && /^[A-Za-z0-9_][A-Za-z0-9_-]{0,63}$/.test(s);}
+function validVolume(volume,platform){
+  if(typeof volume!=='string' || /[\p{Cc}\p{Cf}]/u.test(volume))return false;
+  if(platform==='windows')return /^[A-Z]:\\$/.test(volume);
+  return volume==='/' || (volume.startsWith('/') &&
+    volume.slice(1).split('/').every(part=>part && part!=='.' && part!=='..'));
+}
+function volumePath(path,volume,platform){
+  if(typeof path!=='string'||!path||/[\p{Cc}\p{Cf}]/u.test(path))return false;
+  if(platform==='windows'){
+    if(path.slice(0,3).toUpperCase()!==volume)return false;
+    return path.slice(3).split('\\').every(part=>part && !/[<>:"/|?*]|[. ]$|~\d/.test(part));
+  }
+  var prefix=volume==='/'?'/':volume+'/';
+  return path.startsWith(prefix) && path.slice(prefix.length).split('/').every(part=>part && part!=='.' && part!=='..');
+}
+/* Same decision table as plugin/policy.json, checked by the repository tests. */
+var POLICY={"checks":{"E1":{"ok":"Green","note":"Green"},"E2":{"ok":"Green"},"E3":{"ok":"Green","block":"Red"},"E4":{"ok":"Green","note":"Yellow"},"E5":{"ok":"Green","block":"Red"},"E6":{"ok":"Green","block":"Red"},"E7":{"ok":"Green","block":"Red"},"E8":{"ok":"Green","note":"Yellow"}},"makers":{"High":"Green","Medium":"Yellow"},"fileRows":{"BR-001":"Yellow","BR-002":"Yellow","BR-003":"Yellow","CC-001":"Yellow","CC-002":"Yellow","CC-003":"Yellow","CC-004":"Yellow","CC-005":"Yellow","CC-006":"Yellow","CC-007":"Yellow","CD-001":"Yellow","CD-002":"Yellow","CD-003":"Yellow","CD-004":"Yellow","OFC-001":"Yellow","OT-006":"Yellow","OT-007":"Yellow","TMP-001":"Yellow","TMP-002":"Yellow","TMP-003":"Yellow","TMP-006":"Yellow"}};
+function effectiveTier(it,ev,platform){
+  var result=TIERS.indexOf(it.tier);
+  function cap(tier){result=Math.max(result,TIERS.indexOf(tier));}
+  if(platform!=='windows')cap('Grey');
+  cap(Object.hasOwn(POLICY.fileRows,it.catalogRow)?POLICY.fileRows[it.catalogRow]:'Grey');
+  cap(Object.hasOwn(POLICY.makers,it.maker)?POLICY.makers[it.maker]:'Grey');
+  if(!['Permanent','Recycle Bin'].includes(it.method) ||
+      (/^TMP-/.test(it.catalogRow) && it.method!=='Permanent'))cap('Grey');
+  for(var id of Object.keys(POLICY.checks)){
+    var matches=ev.filter(function(e){return e[0]===id;});
+    if(matches.length!==1)cap('Grey');
+    for(var e of matches){
+      if(!e[2].trim())cap('Grey');
+      var table=POLICY.checks[id];
+      cap(Object.hasOwn(table,e[1])?table[e[1]]:'Grey');
+    }
+  }
+  return TIERS[result];
+}
+
 function validate(d){
-  var k,j,it,pp,ps,id,size,paths,ev,seen={},items=[];
-  if(!d||d.schema!==1||!Array.isArray(d.items)||d.items.length>500)return null;
-  var free=num(d.freeGB,0,1e6),total=num(d.totalGB,0,1e6);
-  if(free===null||total===null)return null;
+  var k,j,it,pp,ps,id,size,paths,ev,seen=new Set(),groups=new Set(),items=[];
+  if(!d || d.schema!==2 || !token(d.scanId) || !['windows','macos','linux'].includes(d.platform) ||
+      !validVolume(d.volume,d.platform) || !Array.isArray(d.items) || d.items.length>500)return null;
+  var free=num(d.freeGiB,0,1e6),total=num(d.totalGiB,0,1e6);
+  if(free===null||total===null||free>total)return null;
   for(k=0;k<d.items.length;k++){
     it=d.items[k];
     if(!it||typeof it!=='object')return null;
-    id=Number(it.id);
-    if(!(id>0&&id%1===0)||seen[id])return null;
-    seen[id]=1;
+    id=it.id;
+    if(it.volume!==d.volume || !Number.isSafeInteger(id))return null;
+    if(id<1 || seen.has(id))return null;
+    seen.add(id);
     if(TIERS.indexOf(it.tier)<0)return null;
-    size=num(it.sizeGB,0,1e6);
+    size=num(it.sizeGiB,0,1e6);
     if(size===null)return null;
     if(!Array.isArray(it.paths)||!it.paths.length||it.paths.length>50)return null;
     paths=[];
     for(j=0;j<it.paths.length;j++){
-      pp=it.paths[j];ps=num(pp&&pp.sizeGB,0,1e6);
-      if(!pp||typeof pp.path!=='string'||!pp.path||ps===null)return null;
+      pp=it.paths[j];ps=num(pp&&pp.sizeGiB,0,1e6);
+      if(!pp||typeof pp.path!=='string'||!volumePath(pp.path,d.volume,d.platform)||ps===null)return null;
       paths.push({p:T(pp.path),s:ps});
     }
+    var separator=d.platform==='windows'?'\\':'/';
+    var keys=paths.map(entry=>d.platform==='windows'?entry.p.toLowerCase():entry.p);
+    if(keys.some((path,index)=>keys.some((other,j)=>index!==j && (path===other || path.startsWith(other+separator)))))return null;
     ev=[];
     (Array.isArray(it.evidence)?it.evidence:[]).forEach(function(e){
-      if(e&&/^E[1-8]$/.test(String(e.id))&&STL[e.state]&&typeof e.text==='string')ev.push([e.id,e.state,T(e.text)]);});
-    items.push({id:id,name:T(String(it.name||'Unnamed item')),tool:T(String(it.tool||'Unknown')),tier:it.tier,size:size,
+      if(e&&/^E[1-8]$/.test(e.id))ev.push([e.id,Object.hasOwn(STL,e.state)?e.state:'unknown',typeof e.text==='string'&&e.text.trim()?T(e.text):'']);});
+    var tier=effectiveTier(it,ev,d.platform), group=it.group;
+    if(group!=null && (group.scanId!==d.scanId||group.volume!==d.volume||group.method!==it.method||!token(group.groupId)||!Number.isSafeInteger(group.count)||group.count<1||
+      paths.length!==Math.min(50,group.count)||typeof group.sha256!=='string'||!/^[0-9a-f]{64}$/.test(group.sha256)))return null;
+    if(group!=null){
+      if(groups.has(group.groupId))return null;
+      groups.add(group.groupId);
+    }
+    var allocations=it.allocations;
+    if(allocations!=null && (!Array.isArray(allocations)||!allocations.every(function(a){
+      return a && typeof a.id==='string' && a.id.length>0 && Number.isSafeInteger(a.bytes) && a.bytes>=0;
+    })))return null;
+    items.push({group:group,allocations:allocations,id:id,name:T(String(it.name||'Unnamed item')),tool:T(String(it.tool||'Unknown')),tier:tier,size:size,
       maker:['High','Medium','Low','n/a'].indexOf(it.maker)<0?'Low':it.maker,
       /* only Green and Yellow items can ever be offered for deletion, whatever the data says */
-      method:(it.tier==='Green'||it.tier==='Yellow')?(it.method==='Permanent'?'Permanent':'Recycle Bin'):'Not offered',
+      method:(tier==='Green'||tier==='Yellow')?it.method:'Not offered',
       row:T(String(it.catalogRow||'')),paths:paths,why:T(String(it.why||'')),cost:T(String(it.cost||'')),missing:it.missing?T(String(it.missing)):'',ev:ev});
   }
-  return {free:free,total:total,date:T(String(d.scanDate||'')),ballast:T(String(d.ballastPath||'')),target:num(d.targetGB,1,1e6),
-    example:!!d.example,scope:T(String(d.scopeNote||'')),gpu:gpuOf(d.gpu),runs:runsOf(d.runs),items:items};
+  return {scanId:d.scanId,platform:d.platform,volume:d.volume,free:free,total:total,date:T(String(d.scanDate||'')),ballast:T(String(d.ballastPath||'')),target:num(d.targetGiB,1,1e6),
+    example:!!d.example,scope:T(String(d.scopeNote||'')),gpu:gpuOf(d.gpu),runs:runsOf(d.runs,d.volume),items:items};
 }
 /* cleanup results are optional: anything missing or invalid simply hides the Results button */
-function runsOf(a){
+function runsOf(a,volume){
   if(!Array.isArray(a)||!a.length||a.length>20)return null;
   var out=[],k,r,b,f,c,cg,s,fl;
   for(k=0;k<a.length;k++){
-    r=a[k];if(!r||typeof r!=='object')return null;
-    b=num(r.freeBeforeGB,0,1e6);f=num(r.freeAfterGB,0,1e6);cg=num(r.clearedGB,0,1e6);
+    r=a[k];if(!r||r.volume!==volume)return null;
+    b=num(r.freeBeforeGiB,0,1e6);f=num(r.freeAfterGiB,0,1e6);cg=num(r.clearedGiB,0,1e6);
     c=num(r.cleared,0,1e7);s=num(r.skipped,0,1e7);fl=num(r.failed,0,1e7);
     if(b===null||f===null||cg===null||c===null||s===null||fl===null)return null;
     out.push({label:T(String(r.label||'Cleanup')),b:b,f:f,cg:cg,c:Math.floor(c),s:Math.floor(s),fl:Math.floor(fl),
@@ -560,7 +776,7 @@ function runsOf(a){
 /* graphics memory is optional: anything missing or unreadable simply hides the bar */
 function gpuOf(g){
   if(!g||typeof g!=='object')return null;
-  var used=num(g.dedicatedUsedGB,0,1e5),tot=g.dedicatedTotalGB==null?0:num(g.dedicatedTotalGB,0,1e5),sh=num(g.sharedUsedGB,0,1e5);
+  var used=num(g.dedicatedUsedGiB,0,1e5),tot=g.dedicatedTotalGiB==null?0:num(g.dedicatedTotalGiB,0,1e5),sh=num(g.sharedUsedGiB,0,1e5);
   if(used===null||tot===null||sh===null)return null;
   return {name:T(String(g.name||'Graphics')),used:used,total:tot,shared:sh};
 }
@@ -574,7 +790,7 @@ ITEMS.forEach(function(i){S.choice[i.id]='keep';});
 
 function $(q){return document.querySelector(q);}
 /* every string shown goes through T: control and bidi-override characters cannot fake rows */
-function T(s){s=String(s);var o='',i,c;for(i=0;i<s.length;i++){c=s.charCodeAt(i);o+=((c<32&&c!==9&&c!==10)||c===127||(c>=8234&&c<=8238)||(c>=8294&&c<=8297))?'?':s.charAt(i);}return o;}
+function T(s){s=String(s);var o='',i,c;for(i=0;i<s.length;i++){c=s.charCodeAt(i);o+=(c<32||c===127||(c>=8234&&c<=8238)||(c>=8294&&c<=8297))?'?':s.charAt(i);}return o;}
 function h(tag,attrs){var e=document.createElement(tag),k,v,i,c;attrs=attrs||{};
   for(k in attrs){v=attrs[k];if(k==='class')e.className=v;else if(k.indexOf('on')===0)e.addEventListener(k.slice(2),v);else if(v===true)e.setAttribute(k,'');else if(v!==false&&v!=null)e.setAttribute(k,T(v));}
   for(i=2;i<arguments.length;i++){c=arguments[i];if(Array.isArray(c)){c.forEach(function(x){if(x!=null&&x!==false)e.append(x.nodeType?x:document.createTextNode(T(x)));});}
@@ -591,15 +807,36 @@ function chosen(v){return ITEMS.filter(function(i){return S.choice[i.id]===v;});
 function color(t){return 'var('+TV[t]+')';}
 
 /* progress toward the free-space target */
+function selectedSpace(items){
+  var pending=0, known=true, seen=new Map(), retained=new Set();
+  var permanent=new Set(items.filter(item=>item.method==='Permanent').map(item=>item.id));
+  // The scan lists every known claimant. An allocation still referenced by another
+  // item or by an item moving to the bin cannot be counted as immediately released.
+  for(var candidate of ITEMS){
+    if(permanent.has(candidate.id))continue;
+    for(var allocation of candidate.allocations||[])retained.add(allocation.id);
+  }
+  for(var item of items){
+    if(item.method==='Recycle Bin'){pending+=item.size;continue;}
+    if(!item.allocations){known=false;continue;}
+    for(var a of item.allocations){
+      if(retained.has(a.id) || (seen.has(a.id)&&seen.get(a.id)!==a.bytes)){known=false;continue;}
+      seen.set(a.id,a.bytes);
+    }
+  }
+  var bytes=0;
+  for(var size of seen.values())bytes+=size;
+  return {pending:pending,gain:known && Number.isSafeInteger(bytes) && bytes/2**30<=TOTAL-FREE?bytes/2**30:null};
+}
 function renderGauge(){
-  var sel=sum(chosen('clear')),proj=FREE+sel,tg=S.target?Math.max(1,S.target):Math.max(1,TOTAL),box=clear($('#gauge'));
+  var chosenItems=chosen('clear'),space=selectedSpace(chosenItems),proj=FREE+(space.gain||0),tg=S.target?Math.max(1,S.target):Math.max(1,TOTAL),box=clear($('#gauge'));
   var f=Math.min(1,FREE/tg),g=Math.min(1,proj/tg);
   var fill=h('div',{class:'pfill'});fill.style.transform='scaleX('+f+')';
   var gain=h('div',{class:'pgain'});gain.style.left=(f*100)+'%';gain.style.width=Math.max(0,(g-f)*100)+'%';
-  box.setAttribute('aria-label','Free space '+f1(FREE)+' gigabytes'+(S.target?', target '+tg+' gigabytes':', no target set'));
+  box.setAttribute('aria-label','Free space '+f1(FREE)+' gibibytes'+(S.target?', target '+tg+' gibibytes':', no target set'));
   box.append(fill,gain);
   $('#ppct').textContent=Math.floor(g*100)+'%';
-  $('#gtext').textContent='Free '+f1(FREE)+' GB of '+TOTAL+' GB'+(sel>0?', projected '+f1(proj)+' GB':'')+'. '+(S.target?(proj>=tg?'Target reached.':f1(tg-proj)+' GB short.'):'No target set.');
+  $('#gtext').textContent=DATA.volume+' free '+f1(FREE)+' GiB of '+TOTAL+' GiB'+(chosenItems.length?(space.gain===null?', projection unknown':', projected '+f1(proj)+' GiB'):'')+'. '+(S.target?(FREE>=tg?'Target reached.':space.gain===null?'':proj>=tg?'Estimated to reach target.':f1(tg-proj)+' GiB short.'):'No target set.');
 }
 /* graphics memory in use: hidden when the scan has no readable numbers */
 function renderGpu(){
@@ -607,31 +844,35 @@ function renderGpu(){
   if(!g){box.hidden=true;$('#gpublock').hidden=true;return;}
   box.hidden=false;$('#gpublock').hidden=false;
   var line=g.total>0
-    ? 'Graphics memory: '+f1(g.used)+' of '+f1(g.total)+' GB in use on '+g.name+'. Local AI models can fill it. Shared with your RAM: '+f1(g.shared)+' GB.'
-    : 'Graphics: '+g.name+' has no memory of its own, so it borrows '+f1(g.shared)+' GB of your normal RAM right now. Nothing separate to free.';
+    ? 'Graphics memory: '+f1(g.used)+' of '+f1(g.total)+' GiB in use on '+g.name+'. Local AI models can fill it. Shared with your RAM: '+f1(g.shared)+' GiB.'
+    : 'Graphics: '+g.name+' has no memory of its own, so it borrows '+f1(g.shared)+' GiB of your normal RAM right now. Nothing separate to free.';
   clear($('#gpu-text')).append(document.createTextNode(T(line)));
   $('#gpu-bar-row').hidden=!(g.total>0);
   if(g.total>0){
     var fill=h('div',{class:'pfill'});fill.style.transform='scaleX('+Math.min(1,g.used/g.total)+')';
-    bar.setAttribute('aria-label','Dedicated graphics memory '+f1(g.used)+' of '+f1(g.total)+' gigabytes in use');
+    bar.setAttribute('aria-label','Dedicated graphics memory '+f1(g.used)+' of '+f1(g.total)+' gibibytes in use');
     bar.append(fill);
   }
 }
 /* the message that goes to the agent: every chosen item with its full paths */
+function manifestName(group){return DATA.scanId+'-'+group.groupId+'.json';}
 function manifest(a){return a.map(function(i){
-  return '#'+i.id+' '+i.name+', '+i.tier+', '+f2(i.size)+' GB\n'+i.paths.map(function(pp){return '    '+pp.p+' ('+f2(pp.s)+' GB)';}).join('\n');}).join('\n');}
+  var label='#'+i.id+' '+i.name+', '+i.tier+', '+f2(i.size)+' GiB, method '+i.method;
+  if(i.group)return label+'\n    Full group '+i.group.groupId+', '+i.group.count+' paths, SHA-256 '+i.group.sha256+', '+manifestName(i.group);
+  return label+'\n'+i.paths.map(function(pp){return '    '+pp.p+' ('+f2(pp.s)+' GiB)';}).join('\n');
+}).join('\n');}
 function renderSticky(){
-  var c=chosen('clear'),k=chosen('check'),gb=sum(c),msg,out;
+  var c=chosen('clear'),k=chosen('check'),gb=sum(c),space=selectedSpace(c),msg,out;
   if(!ITEMS.length)msg='Nothing was found, so there is nothing to send to your agent.';
   else if(!c.length&&!k.length)msg='Step 1: pick Keep or Clear for each folder. Nothing is deleted from this page.';
-  else msg='Chosen: '+c.length+' to clear ('+f2(gb)+' GB)'+(k.length?', '+k.length+' to check first':'')+'. Step 2: copy the message and paste it to your agent. It asks you to confirm each item before anything is deleted.';
+  else msg='Selected logical size '+f2(gb)+' GiB. Estimated immediate gain '+(space.gain===null?'unknown':f2(space.gain)+' GiB')+'. Pending in bin (logical) '+f2(space.pending)+' GiB on '+DATA.volume+'. '+c.length+' marked Clear'+(k.length?', '+k.length+' to check first':'')+'. Step 2: copy the message and paste it to your agent. It asks you to confirm each item before anything is deleted.';
   $('#sum').textContent=msg;
-  if(!c.length&&!k.length){out='Ballast choices from the scan of '+SCANDATE+': keep everything. Nothing to clear.';}
-  else{out='Ballast choices from the scan of '+SCANDATE+'.\n';
+  if(!c.length&&!k.length){out='Ballast choices for scan '+DATA.scanId+' on '+DATA.volume+' ('+SCANDATE+')'+': keep everything. Nothing to clear.';}
+  else{out='Ballast choices for scan '+DATA.scanId+' on '+DATA.volume+' ('+SCANDATE+')'+'.\n';
     if(c.length)out+='\nCLEAR (re-check each item, then ask me to confirm it before deleting):\n'+manifest(c)+'\n';
     if(k.length)out+='\nCHECK FIRST (gather evidence and tell me what you find; do not delete):\n'+manifest(k)+'\n';
-    out+='\nKEEP everything else. Do not touch anything not listed above.\n\n'+BLOCKED;}
-  $('#reply').value=T(out);
+    out+='\nKEEP all items outside these selections. For a group, review its complete bound manifest before asking for approval.\n\n'+BLOCKED;}
+  $('#reply').value=out;
 }
 
 /* pie */
@@ -659,15 +900,15 @@ function renderPie(){if(!$('#pie'))return;
   TIERS.forEach(function(t){
     var v=sum(items.filter(function(i){return i.tier===t;}));if(!v)return;
     var frac=v/tot,a1=a+Math.min(frac,0.9999)*2*Math.PI;
-    var p=sv('path',{d:arc(100,100,54,94,a,a1),fill:color(t),stroke:'var(--panel)','stroke-width':3,tabindex:0,role:'button','aria-label':t+' '+f2(v)+' GB, show these items'},sv('title',{}));
-    p.firstChild.textContent=t+': '+f2(v)+' GB ('+Math.round(frac*100)+'%)';
+    var p=sv('path',{d:arc(100,100,54,94,a,a1),fill:color(t),stroke:'var(--panel)','stroke-width':3,tabindex:0,role:'button','aria-label':t+' '+f2(v)+' GiB, show these items'},sv('title',{}));
+    p.firstChild.textContent=t+': '+f2(v)+' GiB ('+Math.round(frac*100)+'%)';
     p.style.cursor='pointer';p.addEventListener('click',function(){setFilter(t);});
     p.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();setFilter(t);}});
     svg.append(p);a=a1;
-    lg.append(h('button',{type:'button',onclick:function(){setFilter(t);}},h('span',{class:'sw',style:'background:'+color(t)}),t,h('span',{},f2(v)+' GB')));
+    lg.append(h('button',{type:'button',onclick:function(){setFilter(t);}},h('span',{class:'sw',style:'background:'+color(t)}),t,h('span',{},f2(v)+' GiB')));
   });
   var c1=sv('text',{x:100,y:104,'text-anchor':'middle','font-size':30,'font-weight':700});c1.textContent=f1(tot);
-  var c2=sv('text',{x:100,y:128,'text-anchor':'middle','font-size':16,'font-weight':600});c2.textContent='GB';
+  var c2=sv('text',{x:100,y:128,'text-anchor':'middle','font-size':16,'font-weight':600});c2.textContent='GiB';
   svg.append(c1,c2);
 }
 
@@ -678,9 +919,9 @@ function renderBars(){if(!document.getElementById('bars'))return;
   var names=Object.keys(tools).sort(function(x,y){return tools[y].total-tools[x].total;});
   names.forEach(function(n){max=Math.max(max,tools[n].total);});
   names.forEach(function(n){
-    var track=h('div',{class:'bar-track',role:'img','aria-label':n+' '+f2(tools[n].total)+' GB'});
+    var track=h('div',{class:'bar-track',role:'img','aria-label':n+' '+f2(tools[n].total)+' GiB'});
     track.style.width=(tools[n].total/max*100)+'%';
-    TIERS.forEach(function(t){var v=tools[n][t];if(!v)return;var seg=h('div',{title:n+', '+t+': '+f2(v)+' GB'});seg.style.width=(v/tools[n].total*100)+'%';seg.style.background=color(t);track.append(seg);});
+    TIERS.forEach(function(t){var v=tools[n][t];if(!v)return;var seg=h('div',{title:n+', '+t+': '+f2(v)+' GiB'});seg.style.width=(v/tools[n].total*100)+'%';seg.style.background=color(t);track.append(seg);});
     box.append(h('div',{class:'bar-row'},h('div',{title:n},n),h('div',{},track),h('div',{class:'v'},f2(tools[n].total))));
   });
   TIERS.forEach(function(t){key.append(h('span',{},h('i',{style:'background:'+color(t)}),t));});
@@ -694,7 +935,7 @@ function renderEmpty(){
   if(!e)return;
   box.append(h('h2',{},'Nothing found'),
     h('p',{},'This scan did not find anything to clear in the places it checked. That is a good result.'),
-    h('p',{},'Free space: '+f1(FREE)+' GB of '+TOTAL+' GB.'+(S.target?(FREE>=S.target?' You are at your target.':' That is '+f1(S.target-FREE)+' GB short of your target. What is left is mostly your own files and Windows.'):'')),
+    h('p',{},'Free space on '+DATA.volume+': '+f1(FREE)+' GiB of '+TOTAL+' GiB.'+(S.target?(FREE>=S.target?' You are at your target.':' That is '+f1(S.target-FREE)+' GiB short of your target.'):'')),
     h('p',{class:'small'},DATA.scope||''),
     h('button',{class:'btn primary',type:'button',onclick:function(){$('#nav-scan').click();}},'Scan again'));
 }
@@ -706,19 +947,20 @@ function renderClearList(){
   cl.slice(0,lim).forEach(function(it){
     box.append(h('div',{class:'crow2'},radios(it),
       h('button',{type:'button',class:'toollink sublink',title:it.name,onclick:function(){S.toolFilter=null;S.view='clear';S.filter='sel';applyView();openItem(it);}},it.name),
-      h('span',{class:'badge t-'+it.tier},it.tier),h('span',{class:'sz'},f2(it.size)+' GB'),h('span',{class:'cost',title:it.cost},it.cost)));});
+      h('span',{class:'badge t-'+it.tier},it.tier),h('span',{class:'sz'},f2(it.size)+' GiB'),it.group?h('a',{href:'./'+manifestName(it.group),target:'_blank',rel:'noopener'},'Full list ('+it.group.count+' paths)'):
+        h('span',{class:'cost',title:it.cost},it.cost)));});
   if(cl.length>lim)box.append(h('button',{class:'btn',type:'button',style:'margin-top:6px',onclick:function(){S.toolFilter=null;S.view='clear';S.filter='sel';applyView();}},'See all '+cl.length+' in Can clear'));
 }
 
 /* summary by tool: the first screen. Click a tool to drill into its folders */
 function renderOverview(){
-  var by={},names=[];
+  var by=Object.create(null),names=[];
   ITEMS.forEach(function(i){var b=by[i.tool];if(!b){b=by[i.tool]={tool:i.tool,clear:0,held:0,prot:0,items:[]};names.push(i.tool);}
     if(selectable(i))b.clear+=i.size;else if(i.tier==='Grey')b.held+=i.size;else b.prot+=i.size;b.items.push(i);});
   var rows=names.map(function(k){return by[k];}).sort(function(a,b){return (b.clear+b.held+b.prot)-(a.clear+a.held+a.prot);});
-  S.tx=S.tx||{};S.toolNames=names;
+  S.tx=S.tx||Object.create(null);S.toolNames=names;
   var t=clear($('#bytool')),tb=h('tbody');
-  t.append(h('thead',{},h('tr',{},h('th',{},'Tool'),h('th',{class:'num'},'Can clear (GB)'),h('th',{class:'num'},'Held back (GB)'),h('th',{class:'num'},'Protected (GB)'),h('th',{class:'num'},'Total (GB)'))));
+  t.append(h('thead',{},h('tr',{},h('th',{},'Tool'),h('th',{class:'num'},'Can clear (GiB)'),h('th',{class:'num'},'Held back (GiB)'),h('th',{class:'num'},'Protected (GiB)'),h('th',{class:'num'},'Total (GiB)'))));
   rows.forEach(function(b){
     var open=!!S.tx[b.tool];
     /* open the tool in the folder list; with an item, also select that item */
@@ -744,13 +986,13 @@ function renderOverview(){
 
 /* breakdown (pivot) */
 function order(dim,items){
-  var keys=[],seen={},tot={};items.forEach(function(i){var k=i[dim];if(!seen[k]){seen[k]=1;keys.push(k);}tot[k]=(tot[k]||0)+i.size;});
+  var keys=[],seen=Object.create(null),tot=Object.create(null);items.forEach(function(i){var k=i[dim];if(!seen[k]){seen[k]=1;keys.push(k);}tot[k]=(tot[k]||0)+i.size;});
   if(dim==='tier')return TIERS.filter(function(t){return seen[t];});
   return keys.sort(function(a,b){return tot[b]-tot[a];});
 }
 function renderPivot(){
-  var items=visible(),rd=S.rowDim,cd=S.colDim,gb=S.measure==='gb',rows=order(rd,items),cols=order(cd,items),m={},rt={},ct={},max=0,gt=0;
-  items.forEach(function(i){var r=i[rd],c=i[cd],v=gb?i.size:1;m[r]=m[r]||{};m[r][c]=(m[r][c]||0)+v;rt[r]=(rt[r]||0)+v;ct[c]=(ct[c]||0)+v;gt+=v;});
+  var items=visible(),rd=S.rowDim,cd=S.colDim,gb=S.measure==='gb',rows=order(rd,items),cols=order(cd,items),m=Object.create(null),rt=Object.create(null),ct=Object.create(null),max=0,gt=0;
+  items.forEach(function(i){var r=i[rd],c=i[cd],v=gb?i.size:1;m[r]=m[r]||Object.create(null);m[r][c]=(m[r][c]||0)+v;rt[r]=(rt[r]||0)+v;ct[c]=(ct[c]||0)+v;gt+=v;});
   rows.forEach(function(r){cols.forEach(function(c){max=Math.max(max,m[r][c]||0);});});
   var fmt=function(v){return gb?f2(v):String(v);};
   var t=clear($('#pivot'));
@@ -782,15 +1024,15 @@ function renderChips(){
 function passes(i){var f=S.filter;if(S.toolFilter&&i.tool!==S.toolFilter)return false;return f==='all'||(f==='sel'&&selectable(i))||i.tier===f;}
 /* each item sits in its folder; items with several paths sit once, at their common folder */
 function buildTree(){
-  var root={kids:{}};
+  var root={kids:Object.create(null)}, sep=DATA.platform==='windows'?'\\':'/';
   ITEMS.forEach(function(it){
-    var parts=it.paths.map(function(pp){return pp.p.split('\\');}),dir,label;
+    var parts=it.paths.map(function(pp){return pp.p.split(sep);}),dir,label;
     if(parts.length===1){dir=parts[0].slice(0,-1);label=parts[0][parts[0].length-1];}
     else{var base=parts[0].slice(0,-1);
       parts.forEach(function(pt){var d=pt.slice(0,-1),k=0;while(k<base.length&&k<d.length&&base[k]===d[k])k++;base=base.slice(0,k);});
-      dir=base;label=parts.map(function(pt){return pt.slice(dir.length).join('\\');}).join(', ');}
-    var n=root;dir.forEach(function(seg){n.kids[seg]=n.kids[seg]||{name:seg,kids:{}};n=n.kids[seg];});
-    n.kids['#'+it.id]={name:label,kids:{},leaf:{item:it,size:it.paths.reduce(function(s,pp){return s+pp.s;},0)}};
+      dir=base;label=parts.map(function(pt){return pt.slice(dir.length).join(sep);}).join(', ');}
+    var n=root;dir.forEach(function(seg){n.kids[seg]=n.kids[seg]||{name:seg,kids:Object.create(null)};n=n.kids[seg];});
+    n.kids['\x00'+it.id]={name:label,kids:Object.create(null),leaf:{item:it,size:it.size}};
   });
   return root;
 }
@@ -817,8 +1059,8 @@ function radios(it){
 function openItem(it){S.fadeDetail=true;S.open=it.id;document.querySelectorAll('.trow.leaf').forEach(function(r){r.classList.toggle('open',Number(r.getAttribute('data-item'))===it.id);});renderDetail();showTab('d');}
 function mk(n,depth,key){
   if(!vis(n))return null;
-  var name=n.name,k=key;
-  while(!n.leaf&&Object.keys(n.kids).length===1){var c=Object.keys(n.kids)[0];if(!vis(n.kids[c]))break;n=n.kids[c];name+='\\'+n.name;k+='\\'+n.name;}
+  var name=n.name,k=key,sep=DATA.platform==='windows'?'\\':'/';
+  while(!n.leaf&&Object.keys(n.kids).length===1){var c=Object.keys(n.kids)[0];if(!vis(n.kids[c]))break;n=n.kids[c];name+=sep+n.name;k+=sep+n.name;}
   var li=h('li',{role:'treeitem'}),pad='padding-left:'+(depth*14)+'px';
   if(n.leaf){
     var it=n.leaf.item;
@@ -833,7 +1075,7 @@ function mk(n,depth,key){
   var tw=h('button',{class:'twisty',type:'button','aria-expanded':open?'true':'false','aria-label':(open?'Collapse ':'Expand ')+name,onclick:function(e){e.stopPropagation();S.closed[k]=open;renderTree();}},chev());
   li.setAttribute('aria-expanded',open?'true':'false');
   li.append(h('div',{class:'trow'},h('div',{}),h('div',{class:'nm',style:pad},tw,folderIcon(null),h('span',{class:'t',title:name},name)),h('div',{class:'sz'},f2(sizeOf(n))),h('div',{})));
-  if(open){Object.keys(n.kids).sort(function(a,b){return n.kids[a].name.localeCompare(n.kids[b].name);}).forEach(function(c){var x=mk(n.kids[c],depth+1,k+'\\'+c);if(x)ul.append(x);});li.append(ul);}
+  if(open){Object.keys(n.kids).sort(function(a,b){return n.kids[a].name.localeCompare(n.kids[b].name);}).forEach(function(c){var x=mk(n.kids[c],depth+1,k+sep+c);if(x)ul.append(x);});li.append(ul);}
   return li;
 }
 function renderTree(){
@@ -843,9 +1085,9 @@ function renderTree(){
 }
 function updateStatus(){
   var shown=ITEMS.filter(passes);
-  $('#status').textContent=shown.length+' items, '+f2(sum(shown))+' GB. '+chosen('clear').length+' marked Clear, '+chosen('check').length+' marked Check first.';
+  $('#status').textContent=shown.length+' items, '+f2(sum(shown))+' GiB. '+chosen('clear').length+' marked Clear, '+chosen('check').length+' marked Check first.';
   var cl=ITEMS.filter(selectable),gr=ITEMS.filter(function(i){return i.tier==='Grey';}),rd=ITEMS.filter(function(i){return i.tier==='Red';});
-  clear($('#metrics')).append(h('b',{},f2(sum(cl))+' GB'),' can be cleared in '+cl.length+' items  |  ',h('b',{},f2(sum(gr))+' GB'),' held back  |  ',h('b',{},f2(sum(rd))+' GB'),' protected');
+  clear($('#metrics')).append(h('b',{},f2(sum(cl))+' GiB'),' can be cleared in '+cl.length+' items  |  ',h('b',{},f2(sum(gr))+' GiB'),' held back  |  ',h('b',{},f2(sum(rd))+' GiB'),' protected');
 }
 /* what a cleanup did, in numbers: only drawn when the data has a runs block */
 function renderResults(){
@@ -855,36 +1097,35 @@ function renderResults(){
   var tc=0,tg=0,ts=0,tf=0;
   R.forEach(function(r){tc+=r.c;tg+=r.cg;ts+=r.s;tf+=r.fl;});
   var last=R[R.length-1],dl=last.f-last.b;
-  strip.append(h('b',{},'Last cleanup:'),
-    h('span',{},'free space '+(dl>=0?'+':'-')+f1(Math.abs(dl))+' GB ('+f1(last.b)+' to '+f1(last.f)+' GB). '+last.c+' cleared, '+last.s+' skipped, '+last.fl+' failed.'),
+  strip.append(h('b',{},'Last cleanup on '+DATA.volume),
+    h('span',{},'free space '+(dl>=0?'+':'-')+f1(Math.abs(dl))+' GiB ('+f1(last.b)+' to '+f1(last.f)+' GiB). '+last.c+' cleared, '+last.s+' skipped, '+last.fl+' failed.'),
     h('button',{class:'btn',type:'button',onclick:function(){S.toolFilter=null;S.view='results';S.filter='all';applyView();}},'See results'));
   $('#resultstrip').hidden=false;
-  box.append(h('div',{class:'backrow'},h('button',{class:'btn',type:'button',onclick:goOverview},'\u2190 Overview'),h('h2',{style:'margin:0'},'Cleanup results')),
-    h('p',{},'Cleared '+tc+' items, '+f2(tg)+' GB, in '+R.length+(R.length>1?' runs':' run')+'. Skipped '+ts+'. Failed '+tf+'.'));
+  box.append(h('div',{class:'backrow'},h('button',{class:'btn',type:'button',onclick:goOverview},'\u2190 Overview'),h('h2',{style:'margin:0'},'Cleanup results on '+DATA.volume)),
+    h('p',{},'Cleared '+tc+' items with logical size '+f2(tg)+' GiB, in '+R.length+(R.length>1?' runs':' run')+'. Skipped '+ts+'. Failed '+tf+'.'));
   var t=h('table',{class:'pivot'}),tb=h('tbody');
   t.append(h('thead',{},h('tr',{},h('th',{},'Run'),h('th',{class:'num'},'Free before'),h('th',{class:'num'},'Free after'),h('th',{class:'num'},'Change'),h('th',{class:'num'},'Cleared'),h('th',{},'Skipped'),h('th',{},'Failed'))));
   R.forEach(function(r){var d=r.f-r.b;
-    tb.append(h('tr',{},h('th',{scope:'row'},r.label),h('td',{class:'cell'},f1(r.b)+' GB'),h('td',{class:'cell'},f1(r.f)+' GB'),h('td',{class:'cell'},(d>=0?'+':'-')+f1(Math.abs(d))+' GB'),
-      h('td',{class:'cell'},r.c+' items, '+f2(r.cg)+' GB'),h('td',{},r.s+(r.sw?' ('+r.sw+')':'')),h('td',{},r.fl+(r.fw?' ('+r.fw+')':''))));});
+    tb.append(h('tr',{},h('th',{scope:'row'},r.label),h('td',{class:'cell'},f1(r.b)+' GiB'),h('td',{class:'cell'},f1(r.f)+' GiB'),h('td',{class:'cell'},(d>=0?'+':'-')+f1(Math.abs(d))+' GiB'),
+      h('td',{class:'cell'},r.c+' items, '+f2(r.cg)+' GiB'),h('td',{},r.s+(r.sw?' ('+r.sw+')':'')),h('td',{},r.fl+(r.fw?' ('+r.fw+')':''))));});
   t.append(tb);
-  box.append(h('div',{class:'tscroll'},t),h('p',{class:'small'},'Free space can fall during a run when a program is writing files at the same time. These numbers are what your agent measured.'));
-}
-function expandPath(p){
-  var parts=p.split('\\'),first=parts[0],rest=parts.slice(1);
-  var lead=first==='%USERPROFILE%'?['Users','(you)']:first==='%LOCALAPPDATA%'?['Users','(you)','AppData','Local']:[first];
-  return ['This PC','Local Disk (C:)'].concat(lead,rest).join('  >  ');
+  box.append(h('div',{class:'tscroll'},t),h('p',{class:'small'},'Free space can fall during a run when a program is writing files at the same time.'));
 }
 function renderDetail(){
   var box=clear($('#pane-d')),i=ITEMS.filter(function(x){return x.id===S.open;})[0];
-  if(!i){box.append(h('p',{},'Select a row to see its evidence.'));$('#addr').textContent='This PC';return;}
-  var ap=T(expandPath(i.paths[0].p));$('#addr').textContent=ap;$('#addr').setAttribute('title',ap);
+  if(!i){box.append(h('p',{},'Select a row to see its evidence.'));$('#addr').textContent=DATA.volume;return;}
+  var ap=i.paths[0].p;$('#addr').textContent=ap;$('#addr').setAttribute('title',ap);
   var c=S.choice[i.id],cl=c==='clear'?'Clear (confirmed again later)':c==='check'?'Check first':'Keep';
-  box.append(h('h3',{},'#'+i.id+'  '+i.name),h('div',{class:'sub'},h('span',{class:'badge t-'+i.tier},i.tier),'  '+f2(i.size)+' GB  |  '+i.tool+', attribution '+i.maker+'  |  '+(i.tier==='Red'?'Protected':cl)));
+  box.append(h('h3',{},'#'+i.id+'  '+i.name),h('div',{class:'sub'},h('span',{class:'badge t-'+i.tier},i.tier),'  '+f2(i.size)+' GiB  |  '+i.tool+', attribution '+i.maker+'  |  '+(i.tier==='Red'?'Protected':cl)));
   var kv=h('dl',{class:'kv'});
   kv.append(h('dt',{},'Why'),h('dd',{},i.why));
   kv.append(h('dt',{},'Cost'),h('dd',{},i.cost+(i.method==='Recycle Bin'?' Goes to the Recycle Bin.':'')));
   if(i.missing)kv.append(h('dt',{},'Needed'),h('dd',{},i.missing));
-  kv.append(h('dt',{},i.paths.length>1?'Paths':'Path'),h('dd',{},i.paths.map(function(p){return h('code',{class:'path'},p.p);})));
+  if(i.group){
+    kv.append(h('dt',{},'Full manifest'),h('dd',{},h('a',{href:'./'+manifestName(i.group),target:'_blank',rel:'noopener'},'Review all '+i.group.count+' paths'),
+      ' · SHA-256 '+i.group.sha256+' · '+i.method));
+  }
+  kv.append(h('dt',{},i.group?'Largest '+i.paths.length+' (sample)':i.paths.length>1?'Paths':'Path'),h('dd',{},i.paths.map(function(p){return h('code',{class:'path'},p.p);})));
   box.append(kv);
   var have={};i.ev.forEach(function(e){have[e[0]]=e;});
   var rowsEv=Object.keys(EVL).map(function(id){var e=have[id]||[id,'unknown','Not checked yet.'];return {id:id,st:e[1],tx:e[2]};});
@@ -931,7 +1172,9 @@ function setTheme(th,nosave){document.documentElement.setAttribute('data-theme',
   $('#nav-theme').setAttribute('aria-label','Switch to '+(th==='dark'?'light':'dark')+' theme');
   if(!nosave){try{localStorage.setItem('ballast-theme',th);}catch(e){}}}
 $('#nav-theme').addEventListener('click',function(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');});
-setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light',true);
+var theme='light';
+try{if(localStorage.getItem('ballast-theme')==='dark')theme='dark';}catch(e){}
+setTheme(theme,true);
 
 /* scan again request */
 function scanText(){var k=document.querySelector('input[name=scankind]:checked').value;
@@ -961,7 +1204,7 @@ $('#expand').addEventListener('click',function(){
   this.setAttribute('aria-expanded',big?'true':'false');this.textContent=big?'Collapse message':'Expand message';});
 $('#backov').addEventListener('click',goOverview);
 $('#expAll').addEventListener('click',function(){S.toolNames.forEach(function(n){S.tx[n]=true;});renderOverview();});
-$('#colAll').addEventListener('click',function(){S.tx={};renderOverview();});
+$('#colAll').addEventListener('click',function(){S.tx=Object.create(null);renderOverview();});
 $('#reset').addEventListener('click',function(){ITEMS.forEach(function(i){S.choice[i.id]='keep';});
   document.querySelectorAll('input[type=checkbox][data-item]').forEach(function(r){r.checked=false;});
   document.querySelectorAll('.trow.leaf').forEach(function(r){r.classList.remove('marked');});

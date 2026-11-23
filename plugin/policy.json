@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "E1": {"ok": "Green", "note": "Green"},
+    "E2": {"ok": "Green"},
+    "E3": {"ok": "Green", "block": "Red"},
+    "E4": {"ok": "Green", "note": "Yellow"},
+    "E5": {"ok": "Green", "block": "Red"},
+    "E6": {"ok": "Green", "block": "Red"},
+    "E7": {"ok": "Green", "block": "Red"},
+    "E8": {"ok": "Green", "note": "Yellow"}
+  },
+  "makers": {"High": "Green", "Medium": "Yellow"},
+  "fileRows": {
+    "BR-001": "Yellow", "BR-002": "Yellow", "BR-003": "Yellow",
+    "CC-001": "Yellow", "CC-002": "Yellow", "CC-003": "Yellow",
+    "CC-004": "Yellow", "CC-005": "Yellow", "CC-006": "Yellow", "CC-007": "Yellow",
+    "CD-001": "Yellow", "CD-002": "Yellow", "CD-003": "Yellow", "CD-004": "Yellow",
+    "OFC-001": "Yellow", "OT-006": "Yellow", "OT-007": "Yellow",
+    "TMP-001": "Yellow", "TMP-002": "Yellow", "TMP-003": "Yellow", "TMP-006": "Yellow"
+  }
+}

@@ -16,6 +16,7 @@ check before deleting, and what deleting costs. Agents read these tables in [ste
 | [temp-and-recycle-bin.md](temp-and-recycle-bin.md) | The user's Temp folder (with a group rule for thousands of small files) and the Recycle Bin |
 | [windows-and-app-caches.md](windows-and-app-caches.md) | Windows Installer cache (shown, never offered), Windows Update downloads, Chrome and Edge caches, Office add-in caches |
 | [other-ai-tools.md](other-ai-tools.md) | Codex, Gemini, local models, image tools, shader caches, browser automation |
+| [codex-storage.md](codex-storage.md) | Optional read-only Codex storage report and [sidebar diagnosis](codex-sidebar.md) |
 | [macos.md](macos.md) | macOS starter rows and commands (all `planned`, none observed yet) |
 | [linux.md](linux.md) | Linux starter rows and commands (all `planned`, none observed yet) |
 | [SOURCES.md](SOURCES.md) | Where each rule came from |

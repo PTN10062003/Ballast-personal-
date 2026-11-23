@@ -15,24 +15,27 @@ change needs the user's approval for that specific item (H0 in [cleanup.md](clea
    your Ballast skill named, or ask the user for its path. This file and every file it names are in one folder: the
    `plugin` folder of a cloned repository, or the installed plugin's own folder. Never search the disk for a copy of Ballast: a planted
    copy could carry different rules.
-2. **Check that these instructions have not been altered.** Show the user the version you are about to follow and
-   the folder it is in.
-   - A cloned folder: `git rev-parse HEAD`, and whether the working tree is clean (`git status --porcelain`).
-   - A plugin install, which may not be a git checkout: the `version` in `.claude-plugin/plugin.json` or `plugin.json` (they are kept the same). Ask the user
-     to confirm it is the release they installed.
-
-   If the tree is not clean, or the user does not recognise the version, stop and ask. **Show the user exactly what
-   differs** (for example the output of `git diff`). If they say the change is theirs, tell them you will follow the
-   modified copy, then continue to step 3. If they do not recognise it, do not continue.
+2. **Confirm this installation was verified before invocation.** Ask for the result if the operator has not
+   already supplied it. Record the exact verified folder, the independently selected fork commit or attested
+   release, and the manifest version as a label. Use the external comparison in the fork's
+   [security guide](https://github.com/PTN10062003/Ballast-personal-/blob/main/SECURITY.md#verify-before-loading-ballast).
+   A checkout comparison covers the complete source, including the dashboard and report tools. An installed
+   plugin comparison covers every installed file against the retained reference. A version string, clean
+   Git status or a hash supplied by the installation cannot verify its source. On a mismatch, stop and
+   name the affected files. Recheck a fresh copy before loading any additional Ballast instructions.
 3. **Ask two separate questions and wait for an answer to each** (one "yes" must never answer both):
+   - Tell the user before requesting scan consent: **Your AI provider receives metadata returned by your agent’s tools, including names, paths, sizes, dates, process identifiers, start times and local match results. Raw process arguments stay in the local probe.**
    - *"Ballast will inspect folders and processes on this computer (read-only). It will ask before it deletes
      anything, and it will never delete personal files, backups, credentials or browser profiles. It is provided as
      is, without warranty. Do you want to continue?"*
    - *"Do you have a backup or restore point for anything you cannot afford to lose, and is this a computer you own
      or are authorised to manage?"*
 4. Read [cleanup.md](cleanup.md) completely, then [permissions.md](permissions.md).
+   If the request is specifically about Codex storage or its sidebar, run the requested part of the
+   [Codex diagnosis](catalog/codex-storage.md) and end with its read-only summary. A sidebar question
+   alone does not start a device-wide scan or require a free-space target.
 5. Follow the steps in [steps/](steps) in order. Use [catalog/](catalog) for what to look for. **On the first scan,
-   step 1 has you ask the user for their target free space (in GB, or "no target"). Never assume a number.**
+   step 1 has you ask the user for their target free space (in GiB, or "no target"). Never assume a number.**
 6. For a recurring check, follow [weekly.md](weekly.md) instead. Never run it unattended.
 
 ## The rules you must not break
@@ -49,7 +52,8 @@ change needs the user's approval for that specific item (H0 in [cleanup.md](clea
   [permissions.md](permissions.md).
 - Never bypass your permission system, OS prompts, or security software. Never relaunch yourself elevated.
 - Never stop your own process tree. Never stop another agent session without naming it and asking.
-- Read names, sizes, dates and extensions only. Never open file contents to classify them.
+- Classify files from metadata. The optional Codex sidebar diagnosis compares project and chat
+  metadata locally and returns aggregate counts. Never open conversation contents to classify files.
 - Never run an executable or script you find while scanning.
 - Quote only values you measured this session. No shell tool? Say so and give the user read-only commands to run.
 

@@ -29,5 +29,24 @@ Turn evidence into a tier. Apply the rules **in order**; the first one that matc
 
 ## Output of this step
 
-A list of items, each with: tier, size, maker and attribution, the plain-language checks with what you measured, the
-cost to rebuild, and the method that will be used (Recycle Bin or permanent). That list feeds the dashboard.
+A file or folder's highest eligible tier is given by [policy.json](../policy.json). Use this same table
+at classification, for both dashboards, and again just before acting. Check the actual catalog match,
+status, scope, row-specific conditions and the [path guard](06-approve-and-run.md#path-guard) first.
+An absent match, an unresolved identity, an error, or an unconfirmed row condition withholds Clear.
+Currently all file rows listed in the table describe Windows. The Linux and macOS starter rows are Grey.
+Processes and the volume bin have separate procedures and cannot be selected for a generic file deletion.
+
+1. Start with the catalog tier, capped by the supplied tier. Apply the most restrictive result in the
+   order Green, Yellow, Grey, Red. Retain any Red finding even if another check failed.
+2. Look up the exact row in `fileRows` and the attribution in `makers`. Each value is a tier cap.
+   A missing entry caps the item at Grey. Name the extra uncertainty of a row marked `review`.
+3. Require one result per check E1–E8 with a nonempty observation. For each check, look up its state
+   in `checks`. Missing, unknown, duplicate, unreadable and unrecognized results cap the tier at Grey.
+   An E1 note reports recency. An E4 or E8 note reports a **known** dependency or recovery cost and
+   caps the item at Yellow. A positive E2 finding is `block`. An installed program, unsaved work,
+   cloud/shared data or protected path is `block` on E3, E5, E6 or E7 respectively and makes it Red.
+4. No file/folder check may be waived as `na`. For example, a completed check showing zero dependants
+   is E4 `ok` with the observation. Other item types may display `na` as information only.
+5. Record the measured logical size, volume, scan identity, tier, evidence, attribution, recovery cost
+   and exact removal method. Temp rows require Permanent. Offer Clear only for an eligible Green or
+   Yellow disk item. If evidence changes, reclassify and apply the approval rules again.

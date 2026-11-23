@@ -3,14 +3,66 @@
 Same tiers and rules as the rest of the catalog. **Stopping a process is a deletion-class action: ask first,
 name the exact process ID, say what it is and what could be lost.**
 
-## How to look (Windows; macOS and Linux: `ps -eo pid,ppid,comm,args`)
+## How to look
+
+Start with the metadata-only inventory in [preflight](../steps/01-preflight.md). For a candidate PID,
+evaluate the catalog match inside a single local tool call. These examples check for a `uvicorn` argument.
+Use the relevant catalog term for other rows. Only the PID, parent PID, start time and match result may
+leave this probe. Keep raw arguments out of tool output (including stderr), tracing, chat, logs and reports.
+
+Windows PowerShell, with the integer `$candidatePid` from the inventory:
 
 ```powershell
-Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, Name, ExecutablePath, CommandLine, CreationDate
+try {
+    $process = Get-CimInstance Win32_Process -Filter "ProcessId=$([uint32]$candidatePid)" -ErrorAction Stop
+    if (-not $process -or -not $process.CommandLine -or -not $process.CreationDate) { throw 'Unavailable' }
+    [pscustomobject]@{
+        pid = $process.ProcessId
+        parent = $process.ParentProcessId
+        started = $process.CreationDate.ToUniversalTime().ToString('o')
+        match = [bool]($process.CommandLine -match '(?:^|[\\/\s"''])uvicorn(?:\.exe)?(?:$|[\s"''])')
+    } | ConvertTo-Json -Compress
+} catch { '{"match":null}' }
 ```
 
-Work out for each candidate: who started it (the parent), is the parent still alive, which project folder it runs
-from, when it started, and whether the user started it deliberately.
+On macOS or Linux use this local Python 3 probe with the candidate PID as its sole argument.
+It captures the one `ps` result in memory and validates the metadata before printing it.
+
+```python
+import datetime
+import json
+import os
+import re
+import subprocess
+import sys
+
+result = {"match": None}
+try:
+    pid = int(sys.argv[1])
+    if pid <= 0:
+        raise ValueError
+    output = subprocess.run(
+        ["ps", "-ww", "-p", str(pid), "-o", "pid=,ppid=,lstart=,args="],
+        stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=True,
+        env={**os.environ, "LC_ALL": "C", "TZ": "UTC0"},
+    ).stdout
+    if len(output.splitlines()) != 1:
+        raise ValueError
+    pid_text, parent, day, month, date, clock, year, args = output.split(None, 7)
+    if int(pid_text) != pid or not args.strip() or args.lstrip().startswith((b"[", b"(")):
+        raise ValueError
+    started = b" ".join((day, month, date, clock, year)).decode("ascii")
+    stamp = datetime.datetime.strptime(started, "%a %b %d %H:%M:%S %Y")
+    matched = re.search(rb"""(?:^|[/\s"'])uvicorn(?:$|[\s"'])""", args, re.I)
+    result = {"pid": pid, "parent": int(parent), "started": stamp.isoformat() + "Z", "match": bool(matched)}
+except (OSError, ValueError, subprocess.SubprocessError):
+    pass
+print(json.dumps(result))
+```
+
+A null match, uncertain argument visibility, incomplete metadata or a changed start time means unknown.
+A match alone cannot establish ownership or an orphan. Check the parent, executable, working folder and
+owner locally, ask if the user relies on the process, and apply the identity recheck below.
 
 | ID | What | Tier | Evidence before stopping | Cost | Status |
 |---|---|---|---|---|---|

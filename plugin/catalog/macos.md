@@ -21,7 +21,7 @@ All the usual rules apply: complete the eight checks ([steps/03](../steps/03-evi
 | MAC-001 | `~/.claude/projects/<project>/<session-id>.jsonl` and `<session-id>/` | Claude Code chat transcripts. Keep every `memory/` folder | Same layout as the Windows row CC-001. Not observed on a Mac | `planned` |
 | MAC-002 | The per-user temporary folder, under a `claude/<project>/<session-id>/` path | Claude Code per-session scratch folders | Windows row CC-006. The exact macOS location is unconfirmed: find the temporary folder with `getconf DARWIN_USER_TEMP_DIR` and look for `claude` | `planned` |
 | MAC-003 | `~/Library/Application Support/Claude/` | Claude desktop app data. Sign-in and app state live here (Red). Look inside for a folder named `vm_bundles` (the Cowork virtual machine) and cache folders | The app's config folder is documented at this path. The rest is unconfirmed | `planned` |
-| MAC-004 | `~/.codex`, `~/.gemini`, `~/.continue` | Codex, Gemini CLI and Continue folders. Credentials and settings inside are Red | Documented default locations | `planned` |
+| MAC-004 | `~/.codex`, `~/.gemini`, `~/.continue` | Codex, Gemini CLI and Continue folders. Credentials and settings inside are Red. On request, use the [Codex diagnosis](codex-storage.md) for the actual Codex state locations | Documented default locations | `planned` |
 | MAC-005 | `~/.ollama/models` | Downloaded local models. Use `ollama list` and `ollama rm <model>` first | Documented default for a user install | `planned` |
 | MAC-006 | `~/Library/Caches/ms-playwright` | Browsers downloaded for automation | Documented default | `planned` |
 | MAC-007 | `~/.cache/huggingface/hub` | Downloaded model and dataset cache | Documented default | `planned` |

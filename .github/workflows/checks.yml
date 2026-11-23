@@ -1,0 +1,49 @@
+name: Ballast checks
+on:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Check scan rules on the native OS
+        run: python -B dev/scan_tests.py -v
+      - name: Check manifest approvals
+        run: python -B dev/test_approval.py -v
+      - name: Check Codex diagnosis against synthetic state
+        run: python -B dev/codex_diagnosis_tests.py -v
+
+  report-and-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Verify the source and plugin release layouts
+        run: |
+          git archive --format=zip --prefix=ballast-candidate/ -o "$RUNNER_TEMP/source.zip" HEAD
+          git archive --format=zip --prefix=ballast/ -o "$RUNNER_TEMP/plugin.zip" HEAD:plugin
+          python -B dev/release_tests.py "$RUNNER_TEMP/source.zip" "$RUNNER_TEMP/plugin.zip"
+      - name: Generate and exercise the offline dashboard
+        run: |
+          python -m venv "$RUNNER_TEMP/browser-env"
+          source "$RUNNER_TEMP/browser-env/bin/activate"
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+          python -B dev/dashboard_test.py

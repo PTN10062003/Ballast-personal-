@@ -10,16 +10,23 @@ on:
       - 'v*'
 
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
+  contents: read
 
 jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
   release:
+    needs: checks
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out the tagged commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Build the zip and its checksum
         env:
@@ -28,6 +35,7 @@ jobs:
           mkdir dist
           git archive --format=zip --prefix="ballast-${TAG}/" -o "dist/ballast-${TAG}.zip" "${TAG}"
           git archive --format=zip --prefix="ballast/" -o "dist/ballast-plugin-${TAG}.zip" "${TAG}:plugin"
+          python -B dev/release_tests.py "dist/ballast-${TAG}.zip" "dist/ballast-plugin-${TAG}.zip" --tag "${TAG}"
           cd dist
           sha256sum "ballast-${TAG}.zip" "ballast-plugin-${TAG}.zip" > SHA256SUMS
           cat SHA256SUMS

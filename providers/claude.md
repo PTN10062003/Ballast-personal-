@@ -2,34 +2,24 @@
 
 Check Claude Code's current documentation for exact option names; they change.
 
-1. Clone this repo, pin a version, and read [cleanup.md](../plugin/cleanup.md) and [permissions.md](../plugin/permissions.md).
+1. Clone this fork and [verify the checkout](../SECURITY.md#verify-before-loading-ballast) against your reviewed commit from outside the checkout before opening it in your agent. Then read [cleanup.md](../plugin/cleanup.md) and [permissions.md](../plugin/permissions.md).
 2. Open Claude Code in the cloned folder. It reads `CLAUDE.md`, which points to `AGENTS.md`, which sends it to
    the instructions in the `plugin` folder.
 3. Say: **"Read AGENTS.md and run cleanup.md."** For the recurring routine: **"Run weekly.md."**
 
 ## Or install it as a plugin
 
-The repo's `plugin` folder is a Claude Code plugin, and the repo is its own marketplace. **Pin a release** so the instructions cannot change
-under you:
+Use the verified local checkout as the marketplace. Replace the example path with its absolute path.
 
+```text
+/plugin marketplace add /absolute/path/to/verified/Ballast-personal-
+/plugin install ballast@ballast-personal
 ```
-/plugin marketplace add chittychat-studio/Ballast#v0.1.4
-/plugin install ballast@ballast
-```
 
-Then run `/ballast:ballast`. The plugin carries the instructions and the catalog, and the skill reads them from the
-plugin's own folder.
-
-- The plugin does **not** carry the dashboard page: Claude's plugin directory accepts only text and pictures from
-  publishers it has not verified. You get the same results as a table in the chat. For the page, clone the repo.
-
-- Leave auto-update **off** for this marketplace (it is off by default for third-party marketplaces). Update on
-  purpose: `/plugin marketplace update ballast`, after you have read what changed.
-- A plugin install does not run the checksum and attestation check; that applies to the release zip. The pin is
-  your protection, and git tags are not signed yet ([SECURITY.md](../SECURITY.md)). If you want the full check,
-  clone and verify instead.
-- Copying only `plugin/skills/ballast` into your skills folder also works. The skill then asks where your cloned repo is.
-  It never fetches instructions from the web.
+Use your host's plugin details to locate the installed `ballast` directory. Before invoking the skill, compare
+that directory with the trusted reference using `release_verify.py --plugin`, as described in
+[SECURITY.md](../SECURITY.md#verify-before-loading-ballast). Repeat after updates. The packaged plugin returns
+a Markdown table. The checkout includes the offline HTML dashboard.
 
 ## Permissions
 

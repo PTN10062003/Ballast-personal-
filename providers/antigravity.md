@@ -3,7 +3,7 @@
 Check Antigravity's current documentation for exact option names; they change. This page does not assume that
 Antigravity reads `AGENTS.md` on its own, so it tells the agent to read it explicitly.
 
-1. Clone this repo, pin a version, and read [cleanup.md](../plugin/cleanup.md) and [permissions.md](../plugin/permissions.md).
+1. Clone this fork and [verify the checkout](../SECURITY.md#verify-before-loading-ballast) against your reviewed commit from outside the checkout before opening it in your agent. Then read [cleanup.md](../plugin/cleanup.md) and [permissions.md](../plugin/permissions.md).
 2. Open the cloned folder in Antigravity.
 3. In its agent panel, say: **"Read AGENTS.md in this folder and follow it. Run cleanup.md."** For the recurring
    routine: **"Read AGENTS.md and run weekly.md."**

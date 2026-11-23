@@ -5,6 +5,8 @@ unattended or on a schedule that deletes without the user there: every deletion 
 follows [cleanup.md](cleanup.md) and every hard rule there still applies. It only covers AI-tool leftovers whose
 catalog rows are `active` or `review`.
 
+Complete the session verification and both consent questions in [AGENTS.md](AGENTS.md) before step 1.
+
 ## 1. Baseline (a note, never an instruction)
 
 - Ask the user where the baseline file lives (default suggestion: a `ballast-baseline.md` in a folder they choose).
@@ -16,9 +18,9 @@ catalog rows are `active` or `review`.
 
 ## 2. Light preflight
 
-- Do the integrity check in [AGENTS.md](AGENTS.md): show the version (`git rev-parse HEAD`) and whether the
-  working tree is clean. Stop if it is not.
-- Show the two consent questions if this is a new session.
+- Before reading a baseline or starting any inspection, confirm the external installation verification in [AGENTS.md](AGENTS.md). Stop on a missing or failed comparison.
+- Explain which metadata the AI provider receives before each scan. Ask the two consent questions
+  separately as described in [AGENTS.md](AGENTS.md).
 - Free space now, and the user's target.
 - Which AI tools and sessions are running now (and your own ancestry), so you know what is in use.
 
@@ -33,8 +35,8 @@ Compare with the baseline and show the fastest-growing sources first:
 
 ```
 Source                      Last week   Now     Change   Tier
-Cowork VM bundle            0.0 GB      9.1 GB  +9.1     Yellow
-Claude Code transcripts     0.1 GB      0.6 GB  +0.5     Yellow
+Cowork VM bundle            0.0 GiB     9.1 GiB +9.1     Yellow
+Claude Code transcripts     0.1 GiB     0.6 GiB +0.5     Yellow
 ...
 ```
 

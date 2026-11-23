@@ -1,15 +1,14 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ballast",
-  "version": "0.1.4",
+  "version": "0.1.5-personal.1",
   "description": "Instructions your AI agent follows to find and clear disk and memory leftovers from AI tools. Read-only scan first; asks before every deletion.",
   "author": {
-    "name": "chittychat-studio",
-    "email": "hello@cardzo.co.in",
-    "url": "https://github.com/chittychat-studio"
+    "name": "PTN10062003",
+    "url": "https://github.com/PTN10062003"
   },
-  "homepage": "https://github.com/chittychat-studio/Ballast",
-  "repository": "https://github.com/chittychat-studio/Ballast",
+  "homepage": "https://github.com/PTN10062003/Ballast-personal-",
+  "repository": "https://github.com/PTN10062003/Ballast-personal-",
   "license": "Apache-2.0",
   "keywords": ["cleanup", "disk-space", "ai-tools", "local-models", "gpu", "vram"],
   "extensions": {
@@ -18,12 +17,12 @@
         "displayName": "Ballast",
         "shortDescription": "Clean up AI tool leftovers",
         "longDescription": "Ballast is a set of plain-text instructions your agent follows to find and clear the disk and memory leftovers that AI tools leave behind: caches, old sessions, local model files, the GPU memory they hold, MCP servers, headless browsers and agent-made scratch projects. It scans read-only, sorts what it finds into tiers after eight checks per item, and shows the results as a table. You choose what to clear, and it asks again for each item, with the full path, before anything is deleted. It never deletes personal files, backups, credentials or browser profiles. It contains no program, script or MCP server and fetches nothing from the web.",
-        "developerName": "chittychat-studio",
+        "developerName": "PTN10062003",
         "category": "Developer Tools",
         "capabilities": ["Read", "Write"],
-        "websiteURL": "https://github.com/chittychat-studio/Ballast",
-        "supportURL": "https://github.com/chittychat-studio/Ballast/issues",
-        "privacyPolicyURL": "https://github.com/chittychat-studio/Ballast/blob/main/PRIVACY.md",
+        "websiteURL": "https://github.com/PTN10062003/Ballast-personal-",
+        "supportURL": "https://github.com/PTN10062003/Ballast-personal-/issues",
+        "privacyPolicyURL": "https://github.com/PTN10062003/Ballast-personal-/blob/main/PRIVACY.md",
         "defaultPrompt": [
           "I'm low on disk space. Find what my AI tools have left behind.",
           "My laptop is struggling. What is holding memory and GPU memory right now?",

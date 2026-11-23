@@ -25,12 +25,14 @@ nothing else under `User Data`.
 
 | ID | Path (under `%LOCALAPPDATA%\Google\Chrome\User Data` or `%LOCALAPPDATA%\Microsoft\Edge\User Data`) | What it is | Tier | Evidence before deleting | Cost / rebuild | Status |
 |---|---|---|---|---|---|---|
-| BR-001 | In each profile folder (`Default`, `Profile 1`, ...): `Cache`, `Code Cache`, `GPUCache`, `Service Worker\CacheStorage` | Chrome's cached web files and compiled code | Yellow | Chrome is not running (no `chrome` process). No links. Age is shown, not a gate | Pages load more slowly the first time. Offline data of some web apps lives in `CacheStorage` and has to download again | `review` |
-| BR-002 | The same four names in each Edge profile folder | Edge's cached web files and compiled code | Yellow | Edge is not running (no `msedge` process; Edge also runs in the background and for embedded web views, so check the process list and ask) | As BR-001 | `review` |
+| BR-001 | Direct children of each Chrome profile: `Cache`, `Code Cache`, `GPUCache` | HTTP, compiled-code and GPU caches | Yellow | Chrome is closed, the full path guard passes and all applicable evidence is complete | The next visit may load more slowly while the browser rebuilds its caches | `review` |
+| BR-002 | Direct children of each Edge profile: `Cache`, `Code Cache`, `GPUCache` | HTTP, compiled-code and GPU caches | Yellow | Edge is closed (including background and embedded instances), the full path guard passes and all applicable evidence is complete | As BR-001 | `review` |
 | BR-003 | Directly under `User Data`: `ShaderCache`, `GrShaderCache`, `DawnGraphiteCache`, `DawnWebGPUCache`, `component_crx_cache`, `ProvenanceData` | Graphics shader caches and downloaded browser components | Yellow | As BR-001 or BR-002 for that browser | Rebuilt by the browser on next use | `review` |
 
 Never offered, in any browser folder: `Cookies`, `Login Data`, `History`, `Bookmarks`, `Local Storage`, `IndexedDB`,
-`Extensions`, `Preferences`, `Sessions`, or any file you have not been told is a cache. If a path is not in the table,
+`Extensions`, `Preferences`, `Sessions`, `Service Worker\CacheStorage`, or any file you have not been told is a cache.
+Service workers can store locally supplied data there. Its age, size or URL cannot establish a recoverable copy.
+If a path is not in the table,
 it is Red.
 
 *Observed:* on one Windows 11 laptop on 2026-11-02, about 3.2 GB of Chrome caches and about 0.8 GB of Edge caches were

@@ -6,7 +6,7 @@ All notable changes to Ballast are listed here, newest first. The format follows
 
 ## [Unreleased]
 
-Nothing yet.
+The personal fork strengthens process privacy, path and lock checks, browser storage protection, report generation, manifest approvals and per-volume accounting. Install verification compares the complete checkout or packaged plugin to a trusted reference. Pull requests exercise the release archives and regression fixtures.
 
 ## [0.1.4] - 2026-11-10
 

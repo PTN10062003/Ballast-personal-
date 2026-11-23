@@ -20,7 +20,7 @@ All the usual rules apply: complete the eight checks ([steps/03](../steps/03-evi
 |---|---|---|---|---|
 | LIN-001 | `~/.claude/projects/<project>/<session-id>.jsonl` and `<session-id>/` | Claude Code chat transcripts. Keep every `memory/` folder | Same layout as the Windows row CC-001. Not observed on Linux | `planned` |
 | LIN-002 | The system temporary folder, under a `claude/<project>/<session-id>/` path | Claude Code per-session scratch folders | Windows row CC-006. The exact Linux location is unconfirmed | `planned` |
-| LIN-003 | `~/.codex`, `~/.gemini`, `~/.continue` | Codex, Gemini CLI and Continue folders. Credentials and settings inside are Red | Documented default locations | `planned` |
+| LIN-003 | `~/.codex`, `~/.gemini`, `~/.continue` | Codex, Gemini CLI and Continue folders. Credentials and settings inside are Red. On request, use the [Codex diagnosis](codex-storage.md) for the actual Codex state locations | Documented default locations | `planned` |
 | LIN-004 | `~/.ollama/models` | Downloaded local models for a user install. Use `ollama list` and `ollama rm <model>` first | Documented default for a user install | `planned` |
 | LIN-005 | `~/.cache/ms-playwright` | Browsers downloaded for automation | Documented default | `planned` |
 | LIN-006 | `~/.cache/huggingface/hub` | Downloaded model and dataset cache | Documented default | `planned` |

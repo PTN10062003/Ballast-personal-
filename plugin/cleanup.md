@@ -28,14 +28,16 @@ your own permission prompts, and you ask before every deletion.
 - **H7. No bypassing.** Do not circumvent your permission system, OS prompts (UAC, sudo), or security software.
   Never relaunch yourself with elevated rights. If a command is denied, say what was denied and offer: the user
   allows it, the user runs it, or skip.
-- **H8. Minimal data.** Read names, sizes, dates and extensions only. Match command lines locally and report only
+- **H8. Minimal data.** Classify files from names, sizes, dates and extensions. The explicitly requested
+  [Codex diagnosis](catalog/codex-storage.md) may compare project and chat metadata locally and return
+  aggregate results. Keep conversation contents private. Match command lines locally and report only
   yes or no (never echo a whole command line, and mask anything shaped like a key, token or password). Be honest
-  that your AI provider sees every name and path you read or print.
+  that your AI provider sees names and paths returned by your tools.
 - **H9. Per-item approval, bound to a manifest.** Before running anything destructive, show the user a numbered
   manifest of **full, unshortened paths** (and, for a process, ID, start time and path). Delete only paths on that
   approved manifest, exactly as shown. Re-check evidence immediately before each delete (H2). For thousands of small
-  files (the Temp folder), the manifest may be a text file with one full path per line, plus the count, total size
-  and rule, and the approval covers exactly the lines in that file ([steps/06](steps/06-approve-and-run.md) section 1).
+  files, write the full group manifest before presentation. Bind approval to its scan ID, group ID, volume,
+  method, count and SHA-256 ([steps/06](steps/06-approve-and-run.md) section 1).
 - **H10. Reversible first, honestly.** Prefer the Recycle Bin or Trash, but verify it worked (see
   [steps/06](steps/06-approve-and-run.md)). Use permanent deletion only for Green caches the user approved, or
   when the user chooses it knowing the item will not be recoverable. Log what actually happened, not what you hoped.
@@ -83,7 +85,7 @@ An item that is **in use** is Grey, not selectable, whatever its catalog row say
 
 ## Style
 
-Be brief and concrete. Show sizes in GB. Put the decision the user must make at the end of each message.
+Be brief and concrete. Show binary sizes in GiB. Put the decision the user must make at the end of each message.
 When you are unsure, say so, move the item to Grey, and ask (H0). Never hide a failure: report skipped, blocked
 and failed items plainly.
 

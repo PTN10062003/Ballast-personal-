@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Report a security problem
-    url: https://github.com/chittychat-studio/Ballast/security/advisories/new
+    url: https://github.com/PTN10062003/Ballast-personal-/security/advisories/new
     about: Use GitHub's private vulnerability reporting (the Security tab). Please do not open a public issue for a security problem.

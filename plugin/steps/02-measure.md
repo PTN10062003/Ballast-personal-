@@ -4,22 +4,38 @@ Goal: sizes for known AI leftovers, plus a short list of large unknown folders. 
 
 ## 1. Known targets
 
-For each catalog row that applies, measure its size and newest file date. Windows example:
+Record the platform, actual mount or drive root, stable volume ID, free bytes and capacity.
+Create a separate report per volume. Resolve the user's home/profile through the OS. A redirected
+profile may be on a drive such as D:. Use the [whole-path guard](06-approve-and-run.md#path-guard)
+before traversing a candidate. Withhold anything outside the verified scope.
+
+For each applicable catalog row, measure logical file lengths and the newest file date. Windows example
+for an already guarded path:
 
 ```powershell
 $path = "$env:LOCALAPPDATA\<the row's path>"
 if ([string]::IsNullOrWhiteSpace($path) -or -not (Test-Path -LiteralPath $path)) { return }
 $files = Get-ChildItem -LiteralPath $path -Recurse -Force -File -ErrorAction SilentlyContinue -ErrorVariable measureErrors
-($files | Measure-Object Length -Sum).Sum / 1GB
+($files | Measure-Object Length -Sum).Sum    # logical bytes, not reclaimed allocation
 $files | Sort-Object LastWriteTime -Descending | Select-Object -First 1 LastWriteTime, Name
 ```
 
 **Check `$measureErrors`.** If any subfolder could not be read, the size and the newest date are incomplete:
 report them as "at least" and mark the dates **unknown** (H2). Do not treat hidden errors as "nothing there".
 
-(macOS and Linux: `du -sk <path>`; for the newest file use `find <path> -type f -exec stat -f '%m %N' {} +` on
-macOS or `find <path> -type f -printf '%T@ %p\n'` on Linux, then sort. These are different on each system, so
-check which one you are on first.)
+On macOS and Linux, sum `lstat().st_size` for regular files on the guarded tree without following links.
+For recency use their newest modification time. Record unrounded bytes and convert to GiB
+using 1,073,741,824 bytes per GiB at display time. A sum of logical lengths describes the selected
+paths. It does not establish how much space the filesystem will release.
+
+**Immediate gain and pending space.** For a same-volume Recycle Bin/Trash move, estimated immediate
+gain is zero. Report the selected logical bytes pending in that volume's bin. For a permanent removal,
+use allocated bytes only when you can identify the underlying allocations and establish that every
+reference will be released. Deduplicate by stable volume and allocation ID across the entire selection.
+Account for hard links outside the selection, sparse files, clones, snapshots, compression and
+overlapping parent/child selections. Keep report items disjoint when constructing them. When the
+filesystem cannot prove reclaimable allocation, omit the estimate and report **unknown**. Never
+substitute logical bytes or a rounded GiB figure. Re-measure each volume after acting.
 
 **Links and junctions.** Do not follow them. If a folder contains a symbolic link or junction (reparse point),
 note it. Measuring through one can report the size and dates of somewhere else entirely:
@@ -32,21 +48,16 @@ Rows with no matching path are simply absent: skip them quietly.
 
 ## 1a. The Temp folder and the Recycle Bin (read-only)
 
-Always measure both. Use the long Temp path and confirm it is the same folder as `%TEMP%`
-([catalog/temp-and-recycle-bin.md](../catalog/temp-and-recycle-bin.md)). Windows:
-
-```powershell
-$t = Join-Path $env:LOCALAPPDATA 'Temp'
-$files = Get-ChildItem -LiteralPath $t -Recurse -Force -File -ErrorAction SilentlyContinue -ErrorVariable tempErrors
-$today = $files | Where-Object { $_.LastWriteTime -ge (Get-Date).AddHours(-24) }   # information only, not a gate
-'{0} files, {1:N2} GB; {2} changed in the last 24 hours, {3:N2} GB; {4} read errors' -f $files.Count, (($files|Measure-Object Length -Sum).Sum/1GB), $today.Count, (($today|Measure-Object Length -Sum).Sum/1GB), $tempErrors.Count
-Get-ChildItem -LiteralPath $t -Recurse -Force -Attributes ReparsePoint -ErrorAction SilentlyContinue | Select-Object FullName, LinkType, Target   # links: do not follow
-(New-Object -ComObject Shell.Application).NameSpace(0xA).Items().Count   # items in the Recycle Bin
-```
+Always measure both on Windows. Verify the long Temp path and its ancestors and confirm it identifies
+the same directory as `%TEMP%` ([Temp catalog](../catalog/temp-and-recycle-bin.md)). List immediate
+children without following links. Run the path guard on each child before descending into it. Sum the
+guarded measurements for this volume and record how many entries could not be measured. Show the count
+and logical GiB modified in the past 24 hours as information about recency.
 
 A large Temp folder can take a while (about 20 seconds for ten thousand files): say so and run it with a time limit.
 Any read error means the totals are "at least" and the affected items are Grey (H2). Report the Recycle Bin's item
-count, size and dates; do not list its contents beyond names.
+count, size and dates using the volume-scoped inventory in [BIN-001](../catalog/temp-and-recycle-bin.md).
+The inventory, confirmation, action and final free-space reading must name the same volume.
 
 ## 1b. Graphics memory (read-only, optional)
 

@@ -2,28 +2,23 @@
 
 Check Codex CLI's current documentation for exact option names; they change.
 
-1. Clone this repo, pin a version, and read [cleanup.md](../plugin/cleanup.md) and [permissions.md](../plugin/permissions.md).
+1. Clone this fork and [verify the checkout](../SECURITY.md#verify-before-loading-ballast) against your reviewed commit from outside the checkout before opening it in your agent. Then read [cleanup.md](../plugin/cleanup.md) and [permissions.md](../plugin/permissions.md).
 2. Start Codex in the cloned folder. It reads `AGENTS.md`.
 3. Say: **"Read AGENTS.md and run cleanup.md."** For the recurring routine: **"Run weekly.md."**
 
 ## Or install it as a plugin
 
-The repo's `plugin` folder is also a Codex plugin, and the repo is its own marketplace. **Pin a release** so the
-instructions cannot change under you:
+Use the verified local checkout as the marketplace. Replace the example path with its absolute path.
 
+```text
+codex plugin marketplace add /absolute/path/to/verified/Ballast-personal-
+codex plugin add ballast@ballast-personal
 ```
-codex plugin marketplace add chittychat-studio/Ballast --ref v0.1.4
-```
 
-Then start Codex, open `/plugins`, install Ballast, and ask it to clean up after your AI tools.
-
-- The plugin carries the instructions and the catalog, not the dashboard page. You get the results as a table in
-  the chat. For the page, clone the repo.
-- Update on purpose, after you have read what changed: `codex plugin marketplace upgrade`.
-- A plugin install does not run the checksum and attestation check. If you want that, clone and verify instead
-  ([SECURITY.md](../SECURITY.md)).
-- This install route was written from Codex's documentation and has **not yet been run** by the maintainers
-  (test P4 in [dev/tests.md](../dev/tests.md)). If a step does not work as written, please open an issue.
+Use your host's plugin details to locate the installed `ballast` directory. Before invoking the skill, compare
+that directory with the trusted reference using `release_verify.py --plugin`, as described in
+[SECURITY.md](../SECURITY.md#verify-before-loading-ballast). Repeat after updates. The packaged plugin returns
+a Markdown table. The checkout includes the offline HTML dashboard.
 
 ## Permissions
 
